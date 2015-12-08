@@ -224,6 +224,10 @@ void handleKeypress(GLFWwindow* window, int key, int scancode, int action, int m
 
 void handleJoystick()
 {
+  if(glfwJoystickPresent(GLFW_JOYSTICK_1)==GL_FALSE)
+    {
+      return;
+    }
   joystick.attack=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[0]==1);
   joystick.p=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[9]==1);
   joystick.right=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[0]==1);

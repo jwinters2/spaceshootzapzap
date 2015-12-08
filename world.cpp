@@ -81,11 +81,11 @@ void WORLD::render(int frame)
 {
   system("clear");
 
-  for(int i=0;i<11;i++)
+  /*for(int i=0;i<11;i++)
     {
       cout<<i<<": "<<(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[i]==1)<<" ";
     }
-  cout<<glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[0]<<endl;
+  cout<<glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[0]<<endl;*/
   cout<<"joystick.attack: "<<joystick.attack<<endl;
   cout<<"frame "<<globalFrame<<endl;
   cout<<"score "<<globalScore<<endl;
