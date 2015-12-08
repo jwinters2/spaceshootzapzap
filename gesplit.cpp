@@ -85,9 +85,9 @@ int main(int argc, char** argv)
       
       startMenuText.push_back(new GTEXT("PRESS ENTER OR 4 TO START",24,(screen.w/2)-300,(screen.h-24)/4,0,0));
       startMenuText.push_back(new GTEXT("WASD - ARROW KEYS:     MOVE",12,40,(screen.h-24)/2+20,0,0));
-      startMenuText.push_back(new GTEXT("P:                     PAUSE",12,40,(screen.h-24)/2,0,0));
-      startMenuText.push_back(new GTEXT("SPACE - BUTTON :       SHOOT",12,40,(screen.h-24)/2-20,0,0));
-      startMenuText.push_back(new GTEXT("ESC:                   QUIT GAME LIKE A QUITTER",12,40,(screen.h-24)/2-40,0,0));
+      startMenuText.push_back(new GTEXT("P - BUTTON 10    :     PAUSE",12,40,(screen.h-24)/2,0,0));
+      startMenuText.push_back(new GTEXT("SPACE - BUTTON 1 :     SHOOT",12,40,(screen.h-24)/2-20,0,0));
+      startMenuText.push_back(new GTEXT("ESC              :     QUIT GAME LIKE A QUITTER",12,40,(screen.h-24)/2-40,0,0));
       startMenuText.push_back(new GTEXT("SPACE SHOOT",40,(screen.w/2)-220,(screen.h-24)*3/4+20,0,0));
       startMenuText.push_back(new GTEXT("ZAP-ZAP",40,(screen.w/2)-140,(screen.h-24)*3/4-20,0,0));
 
