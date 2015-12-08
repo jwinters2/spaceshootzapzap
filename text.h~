@@ -1,0 +1,20 @@
+#pragma once
+#include <cstring>
+#include <GL/gl.h>
+#include <FTGL/ftgl.h>
+
+#include "object.h"
+
+class TEXT:public OBJECT
+{
+ private:
+  FTPixmapFont * font;
+ public:
+  std::string text;
+  TEXT(string,int=12,int=0,int=0,int=0,int=0);
+  TEXT(WORLD&,string,int=12,int=0,int=0,int=0,int=0);
+  void render();
+  bool logic(int);
+  void setFontSize(int);
+  void setText(string);
+};
