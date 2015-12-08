@@ -31,7 +31,7 @@ ENEMYBOSS::ENEMYBOSS(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
 
 void ENEMYBOSS::render()
 {
-  if(!dead || age<=30)
+  if(!dead || age<=60)
     {
       for(int index=0;index<5;index++)
 	{
@@ -103,21 +103,21 @@ void ENEMYBOSS::render()
       glPushMatrix();
       glTranslatef(x,y,0);
       glRotatef(direction,0,0,1);
-      if(age>30)
+      if(age>60)
 	{
-	  glScalef(((float)age-30)*2,((float)age-30)*2,0);
+	  glScalef(((float)age-60),((float)age-60),0);
 	}
       //death glow
       glBegin(GL_TRIANGLE_FAN);
-      if(age>30)
+      if(age>60)
 	{
 	  alSourceStop(Source.at(5));
 	  alSourcePlay(Source.at(6));
-	  glColor4f(1.0f,1.0f,1.0f,1.0f-((float)age-30)/20);//FFFFFF
+	  glColor4f(1.0f,1.0f,1.0f,1.0f-((float)age-60)/20);//FFFFFF
 	}
       else
 	{
-	  glColor4f(1.0f,1.0f,1.0f,(float)age/30);//FFFFFF
+	  glColor4f(1.0f,1.0f,1.0f,(float)age/60);//FFFFFF
 	}
       glVertex3f(0.0f,-9.0f,0.0f);
       glVertex3f(36.0f,-27.0f,0.0f);
@@ -158,7 +158,7 @@ bool ENEMYBOSS::logic(int step)
 	}
       else
 	{
-	  if(age>45)
+	  if(age>90)
 	    {
 	      world->deleteobject(id);
 	    }
@@ -184,20 +184,20 @@ void ENEMYBOSS::addToScore()
 
 void ENEMYBOSS::stopAndFire()
 {
-  if(age<25)
+  if(age<50)
     {
       return;
     }
-  if(age==25)
+  if(age==50)
     {
       xvel=yvelstart;
       yvel=xvelstart;
     }
-  if(age%20==0)
+  if(age%40==0)
     {
       for(int index=-3;index<=3;index++)
 	{
-	      new ENEMYBM(*world,x,y,12*cos((direction+90)*PI/180+(0.25*index)),12*sin((direction+90)*PI/180+(0.25*index)));
+	      new ENEMYBM(*world,x,y,9*cos((direction+90)*PI/180+(0.25*index)),9*sin((direction+90)*PI/180+(0.25*index)));
 	}
     }
   if(!((x>radius)&&(x<screen.w-radius)&&(y>radius)&&(y<screen.h-radius)))

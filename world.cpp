@@ -150,21 +150,21 @@ void WORLD::generateEnemies()
 	  return;
 	}
     }
-  int frequency=10+(20*pow(1.001,(-1*globalFrame)));
+  int frequency=15+(30*pow(1.001,(-1*globalFrame)));
   cout<<"frequency "<<frequency<<endl;
-  if(globalFrame%frequency==0 && globalFrame>30)
+  if(globalFrame%frequency==0 && globalFrame>60)
     {
       switch(rand()%4)
 	{
 	case 0://from top
-	  randomEnemy(*this,rand()%screen.w,-20,0,12);
+	  randomEnemy(*this,rand()%screen.w,-20,0,6);
 	  //new ENEMYNORMAL(*this,rand()%screen.w,-20,0,12);
 	case 1://from bottom
-	  randomEnemy(*this,rand()%screen.w,screen.h+20,0,-12);
+	  randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6);
 	case 2://from left
-	  randomEnemy(*this,-20,rand()%screen.h,12,0);
+	  randomEnemy(*this,-20,rand()%screen.h,6,0);
 	case 3://from right
-	  randomEnemy(*this,screen.w+20,rand()%screen.h,-12,0);
+	  randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0);
 	}
     }
 }

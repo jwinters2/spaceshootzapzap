@@ -15,7 +15,7 @@ PLAYER::PLAYER(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
 {
   type="PLAYER";
-  maxspeed=7;
+  maxspeed=10;
   hostile=0;
 }
 
@@ -97,19 +97,19 @@ bool PLAYER::logic(int step)
 	{
 	  if(keys.up)
 	    {
-	      yvel+=1.5;
+	      yvel+=2;
 	    }
 	  if(keys.down)
 	    {
-	      yvel-=1.5;
+	      yvel-=2;
 	    }
 	  if(keys.left)
 	    {
-	      xvel-=1.5;
+	      xvel-=2;
 	    }
 	  if(keys.right)
 	    {
-	      xvel+=1.5;
+	      xvel+=2;
 	    }
 	  if((xvel*xvel)+(yvel*yvel)>maxspeed*maxspeed)
 	    {
@@ -187,12 +187,12 @@ void PLAYER::checkCollisions()
 
 void PLAYER::shootBullets()
 {
-  if((globalFrame-attackFrame)%12==0)
+  if((globalFrame-attackFrame)%6==0)
     {
-      new BULLET(*world,x,y,0,12);
-      new BULLET(*world,x,y,0,-12);
-      new BULLET(*world,x,y,12,0);
-      new BULLET(*world,x,y,-12,0);
+      new BULLET(*world,x,y,0,16);
+      new BULLET(*world,x,y,0,-16);
+      new BULLET(*world,x,y,16,0);
+      new BULLET(*world,x,y,-16,0);
       alSourcePlay(Source.at(1));
     }
 }

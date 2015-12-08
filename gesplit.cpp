@@ -132,7 +132,11 @@ int main(int argc, char** argv)
 	      new_world.render();
 	    }
 	  glfwSwapBuffers(window);
-	  usleep(16667);
+
+	  while(glfwGetTime()<(double)0.01666667)
+	    {
+	    }
+	  glfwSetTime(0);
 	}
     }
   
