@@ -97,19 +97,19 @@ bool PLAYER::logic(int step)
 	{
 	  if(keys.up)
 	    {
-	      yvel+=1.5;
+	      yvel+=0.8;//1.5;
 	    }
 	  if(keys.down)
 	    {
-	      yvel-=1.5;
+	      yvel-=0.8;//1.5;
 	    }
 	  if(keys.left)
 	    {
-	      xvel-=1.5;
+	      xvel-=0.8;//1.5;
 	    }
 	  if(keys.right)
 	    {
-	      xvel+=1.5;
+	      xvel+=0.8;//1.5;
 	    }
 	  if((xvel*xvel)+(yvel*yvel)>maxspeed*maxspeed)
 	    {

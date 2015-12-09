@@ -124,8 +124,12 @@ bool HIGHSCORE::logic(int step)
 	  switch(nameToEnter.length())
 	    {
 	    case 0:
-	      nameToEnter="---";
-	      break;
+	      gameScoreBoard=false;
+	      enteringName=false;
+	      playing=false;
+	      return false;
+	      //nameToEnter="---";
+	      //break;
 	    case 1:
 	      nameToEnter+="--";
 	      break;
