@@ -20,7 +20,7 @@ struct keyboard
   bool left,left_old;
   bool right,right_old;
   bool attack,attack_old;
-  bool enter;
+  bool enter,enter_old;
   bool a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,backspace;
   bool a_old,b_old,c_old,d_old,e_old,f_old,g_old,h_old,i_old,j_old,k_old,l_old,m_old,n_old,o_old,p_old,q_old,r_old,s_old,t_old,u_old,v_old,w_old,x_old,y_old,z_old,backspace_old;
   keyboard()

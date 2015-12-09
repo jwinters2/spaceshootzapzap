@@ -238,6 +238,7 @@ void handleJoystick()
   joystick.left=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[0]==-1);
   joystick.up=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[1]==-1);
   joystick.down=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[1]==1);
+  joystick.enter=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[3]==1);
 
   if(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[3]==1)
     {
@@ -276,6 +277,10 @@ void handleJoystick()
     {
       keys.down=joystick.down;
     }
+  if(joystick.enter!=joystick.enter_old)
+    {
+      keys.enter=joystick.enter;
+    }
   
   joystick.attack_old=joystick.attack;
   joystick.p_old=joystick.p;
@@ -283,7 +288,7 @@ void handleJoystick()
   joystick.left_old=joystick.left;
   joystick.up_old=joystick.up;
   joystick.down_old=joystick.down;
-
+  joystick.enter_old=joystick.enter;
 }
 
 void quitGame(GLFWwindow*)
