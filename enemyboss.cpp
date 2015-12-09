@@ -36,12 +36,12 @@ void ENEMYBOSS::render()
       for(int index=0;index<5;index++)
 	{
 	  glPushMatrix();
-	  glTranslatef(x-(index*xvel),y-(index*yvel),0);
+	  glTranslatef(x-(index*2*xvel),y-(index*2*yvel),0);
 	  glRotatef(direction,0,0,1);
 	  
 	  glBegin(GL_TRIANGLE_FAN);
 	  
-	  glColor4f(1.0f,1.0f,0.5f,(float)1/(2+index));//FFFF00
+	  glColor4f(1.0f,1.0f,0.5f,(float)1/(2+index));//FFFF70
 	  glVertex3f(0.0f,-9.0f,0.0f);
 	  
 	  glVertex3f(-36.0f,-27.0f,0.0f);

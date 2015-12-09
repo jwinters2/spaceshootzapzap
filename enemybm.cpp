@@ -24,7 +24,7 @@ ENEMYBM::ENEMYBM(WORLD& world_a,float x_a,float y_a,float xvel_a,float yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
 {
   type="ENEMYBM";
-  radius=9;
+  radius=8;
   health=1;
   hostile=1;
 }

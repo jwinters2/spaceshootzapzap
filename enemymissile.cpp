@@ -1,4 +1,4 @@
-#define PI 3.16159265358
+#define PI 3.16159265358979323
 
 #include <iostream>
 #include <vector>
@@ -71,14 +71,30 @@ void ENEMYMISSILE::render()
     }
   else
     {
-      glBegin(GL_TRIANGLE_FAN);
-      //glColor3f((1+cos(countdown*2*PI/15))/2,0.0f,0.0f);
-      glColor4f(1.0f,0.5f,0.0f,(1+cos(countdown*2*PI/15))/2);
-      for(int index=0;index<=16;index++)
+      /*for(int jndex=0;jndex<=5;jndex++)
 	{
-	  glVertex3f(18*cos((float)index*PI/8),18*sin((float)index*PI/8),0.0f);
-	}
-      glEnd();
+	      glBegin(GL_TRIANGLE_FAN);
+	      glColor4f(1.0f,0.5f,0.0f,0.0f);
+	      glVertex3f(0.0f,0.0f,0.0f);
+	      //glColor3f((1+cos(countdown*2*PI/15))/2,0.0f,0.0f);
+	      glColor4f(1.0f,0.5f,0.0f,(1+cos((float)jndex+countdown*2*PI/15))/3);
+	      for(int index=0;index<128;index++)
+		{
+		  glVertex3f(4.0f*(1+jndex)*cos((float)index*PI/63.75),4.0f*(1+jndex)*sin((float)index*PI/63.75),0.0f);
+		}
+	      glEnd();
+	}*/
+       glBegin(GL_TRIANGLE_FAN);
+       glColor4f(1.0f,0.5f,0.0f,0.0f);
+       glVertex3f(0.0f,0.0f,0.0f);
+       glColor4f(1.0f,0.5f,0.0f,1.0f);
+       //glColor3f((1+cos(countdown*2*PI/15))/2,0.0f,0.0f);
+       //glColor4f(1.0f,0.5f,0.0f,(1+cos((float)jndex+countdown*2*PI/15))/3);
+       for(int index=0;index<128;index++)
+	 {
+	   glVertex3f(3.0f*((100-countdown)%10)*cos((float)index*PI/63.75),3.0f*((100-countdown)%10)*sin((float)index*PI/63.75),0.0f);
+	 }
+       glEnd();
     }
   
   glPopMatrix();
