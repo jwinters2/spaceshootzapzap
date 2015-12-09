@@ -92,10 +92,10 @@ void WORLD::render(int frame)
   cout<<"attack frame "<<attackFrame<<endl;
   cout<<"number of entities "<<objects.size()+1<<endl;
 
-  float red=(1+sin(globalFrame*PI/300))/2;
-  float green=(1+sin((2*PI/3)+globalFrame*PI/300))/2;
-  float blue=(1+sin((4*PI/3)+globalFrame*PI/300))/2;
-  float value=(float)globalFrame/6000;
+  float red=(1+sin(globalFrame*PI/600))/2;
+  float green=(1+sin((2*PI/3)+globalFrame*PI/600))/2;
+  float blue=(1+sin((4*PI/3)+globalFrame*PI/600))/2;
+  float value=(float)globalFrame/12000;
   if(value>0.25)
     {
       value=0.25;

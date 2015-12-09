@@ -21,7 +21,7 @@ ENEMYMISSILE::ENEMYMISSILE(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   radius=12;
   health=1;
   alSourcePlay(Source.at(3));
-  countdown=45;
+  countdown=60;
   hostile=0;
 }
 
