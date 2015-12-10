@@ -26,7 +26,7 @@ HIGHSCORE::HIGHSCORE(int size_a,int x_a,int y_a,int xvel_a,int yvel_a)
   nameToEnter="";
   layer=6;
   cout<<"set text"<<endl;
-  font = new FTPixmapFont("emulogic.ttf");
+  font = new FTBitmapFont("Unifont.ttf");
   cout<<"set font"<<endl;
   font->FaceSize(size_a);
   cout<<"end text constructor"<<endl;
@@ -61,12 +61,13 @@ void HIGHSCORE::reset()
 
 void HIGHSCORE::render()
 {
+  int width;
 
   glClearColor(0.0f,0.0f,0.0f,0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
   glPushMatrix();
-  glTranslatef(x,y,0);
+  //glTranslatef(x,y,0);
   
   glPushAttrib(GL_ALL_ATTRIB_BITS);
   glDisable(GL_LIGHTING);
@@ -84,30 +85,59 @@ void HIGHSCORE::render()
   glColor4d(1.0,1.0,1.0,1.0);
   for(int index=0;index<(scoreEntries.size()>11?11:scoreEntries.size());index++)
     {
-      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(x,y-(30*index),0)); //text doesn't transform, so use FTPoint
-      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(x+screen.w/2-40,y-(30*index),0)); //text doesn't transform, so use FTPoint
+      width=abs(font->BBox(scoreEntries.at(index).s1.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox(scoreEntries.at(index).s1.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(0-(width/2)+(screen.w/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(1-(width/2)+(screen.w/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(0-(width/2)+(screen.w/4),y-(30*index)+1,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+
+      width=abs(font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(0-(width/2)+(screen.w*3/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(1-(width/2)+(screen.w*3/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(0-(width/2)+(screen.w*3/4),y-(30*index)+1,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+
+
     }
+  width=abs(font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
   switch(nameToEnter.length())
     {
     case 0:
-      font->Render("___",-1,FTPoint(x,y-390,0)); //text doesn't transform, so use FTPoint
+      font->Render("___",-1,FTPoint(0-(width/2)+(screen.w/4),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render("___",-1,FTPoint(1-(width/2)+(screen.w/4),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render("___",-1,FTPoint(0-(width/2)+(screen.w/4),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
       break;
     case 1:
-      font->Render(" __",-1,FTPoint(x,y-390,0)); //text doesn't transform, so use FTPoint
+      font->Render(" __",-1,FTPoint((screen.w/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render(" __",-1,FTPoint((screen.w/4)-(width/2)+1,y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render(" __",-1,FTPoint((screen.w/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint      break;
       break;
     case 2:
-      font->Render("  _",-1,FTPoint(x,y-390,0)); //text doesn't transform, so use FTPoint
-      break;
+      font->Render("  _",-1,FTPoint((screen.w/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render("  _",-1,FTPoint((screen.w/4)-(width/2)+1,y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      font->Render("  _",-1,FTPoint((screen.w/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint      break;
     }
-  font->Render(nameToEnter.c_str(),-1,FTPoint(x,y-390,0)); //text doesn't transform, so use FTPoint
-  font->Render(intToString(globalScore).c_str(),-1,FTPoint(x+screen.w/2-40,y-390,0)); //text doesn't transform, so use FTPoint
+  width=abs(font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+  font->Render(nameToEnter.c_str(),-1,FTPoint((screen.w/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+  font->Render(nameToEnter.c_str(),-1,FTPoint((screen.w/4)-(width/2)+1,y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+  font->Render(nameToEnter.c_str(),-1,FTPoint((screen.w/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+
+  width=abs(font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+  font->Render(intToString(globalScore).c_str(),-1,FTPoint(0+(screen.w*3/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+  font->Render(intToString(globalScore).c_str(),-1,FTPoint(1+(screen.w*3/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+  font->Render(intToString(globalScore).c_str(),-1,FTPoint(0+(screen.w*3/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+  
   if(enteringName)
     {
-      font->Render("ENTER INITIALS",-1,FTPoint((screen.w/2)-180,y-430,0));
+      width=abs(font->BBox("ENTER INITIALS",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("ENTER INITIALS",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+      font->Render("ENTER INITIALS",-1,FTPoint((screen.w/2)-(width/2),y-430,0),FTPoint(2,0,0));
+      font->Render("ENTER INITIALS",-1,FTPoint(1+(screen.w/2)-(width/2),y-430,0),FTPoint(2,0,0));
+      font->Render("ENTER INITIALS",-1,FTPoint((screen.w/2)-(width/2),y-429,0),FTPoint(2,0,0));
     }
   else
     {
-      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-280,y-430,0));
+      width=abs(font->BBox("PRESS ENTER TO PLAY AGAIN",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("PRESS ENTER TO PLAY AGAIN",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-(width/2),y-430,0));
+      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-(width/2)+1,y-430,0));
+      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-(width/2),y-429,0));
     }
 
   glPopAttrib();
@@ -119,7 +149,7 @@ bool HIGHSCORE::logic(int step)
   if(enteringName)
     {
       enterName();
-      if(keys.enter)
+      if(keys.enter&&!keys.enter_old)
 	{
 	  switch(nameToEnter.length())
 	    {
@@ -151,12 +181,19 @@ bool HIGHSCORE::logic(int step)
 	      scoreFile<<scoreEntries.at(index).s2<<"\n";
 	    }
 	  scoreFile.close();
-	  gameScoreBoard=false;
 	  enteringName=false;
-	  playing=false;
 	  //gameScoreBoard=0;
 	}
     }
+  else
+    {
+      if(keys.enter&&!keys.enter_old)
+	{
+	  playing=false;
+	  gameScoreBoard=false;
+	}
+    }
+  keys.enter_old=keys.enter;
   return false;
   /*
   switch(step)
@@ -187,32 +224,32 @@ void HIGHSCORE::enterName()
     {
       return;
     }
-  if(keys.a && !keys.a_old){nameToEnter.append("a");}
-  if(keys.b && !keys.b_old){nameToEnter.append("b");}
-  if(keys.c && !keys.c_old){nameToEnter.append("c");}
-  if(keys.d && !keys.d_old){nameToEnter.append("d");}
-  if(keys.e && !keys.e_old){nameToEnter.append("e");}
-  if(keys.f && !keys.f_old){nameToEnter.append("f");}
-  if(keys.g && !keys.g_old){nameToEnter.append("g");}
-  if(keys.h && !keys.h_old){nameToEnter.append("h");}
-  if(keys.i && !keys.i_old){nameToEnter.append("i");}
-  if(keys.j && !keys.j_old){nameToEnter.append("j");}
-  if(keys.k && !keys.k_old){nameToEnter.append("k");}
-  if(keys.l && !keys.l_old){nameToEnter.append("l");}
-  if(keys.m && !keys.m_old){nameToEnter.append("m");}
-  if(keys.n && !keys.n_old){nameToEnter.append("n");}
-  if(keys.o && !keys.o_old){nameToEnter.append("o");}
-  if(keys.p && !keys.p_old){nameToEnter.append("p");}
-  if(keys.q && !keys.q_old){nameToEnter.append("q");}
-  if(keys.r && !keys.r_old){nameToEnter.append("r");}
-  if(keys.s && !keys.s_old){nameToEnter.append("s");}
-  if(keys.t && !keys.t_old){nameToEnter.append("t");}
-  if(keys.u && !keys.u_old){nameToEnter.append("u");}
-  if(keys.v && !keys.v_old){nameToEnter.append("v");}
-  if(keys.w && !keys.w_old){nameToEnter.append("w");}
-  if(keys.x && !keys.x_old){nameToEnter.append("x");}
-  if(keys.y && !keys.y_old){nameToEnter.append("y");}
-  if(keys.z && !keys.z_old){nameToEnter.append("z");}
+  if(keys.a && !keys.a_old){nameToEnter.append("A");}
+  if(keys.b && !keys.b_old){nameToEnter.append("B");}
+  if(keys.c && !keys.c_old){nameToEnter.append("C");}
+  if(keys.d && !keys.d_old){nameToEnter.append("D");}
+  if(keys.e && !keys.e_old){nameToEnter.append("E");}
+  if(keys.f && !keys.f_old){nameToEnter.append("F");}
+  if(keys.g && !keys.g_old){nameToEnter.append("G");}
+  if(keys.h && !keys.h_old){nameToEnter.append("H");}
+  if(keys.i && !keys.i_old){nameToEnter.append("I");}
+  if(keys.j && !keys.j_old){nameToEnter.append("J");}
+  if(keys.k && !keys.k_old){nameToEnter.append("K");}
+  if(keys.l && !keys.l_old){nameToEnter.append("L");}
+  if(keys.m && !keys.m_old){nameToEnter.append("M");}
+  if(keys.n && !keys.n_old){nameToEnter.append("N");}
+  if(keys.o && !keys.o_old){nameToEnter.append("O");}
+  if(keys.p && !keys.p_old){nameToEnter.append("P");}
+  if(keys.q && !keys.q_old){nameToEnter.append("Q");}
+  if(keys.r && !keys.r_old){nameToEnter.append("R");}
+  if(keys.s && !keys.s_old){nameToEnter.append("S");}
+  if(keys.t && !keys.t_old){nameToEnter.append("T");}
+  if(keys.u && !keys.u_old){nameToEnter.append("U");}
+  if(keys.v && !keys.v_old){nameToEnter.append("V");}
+  if(keys.w && !keys.w_old){nameToEnter.append("W");}
+  if(keys.x && !keys.x_old){nameToEnter.append("X");}
+  if(keys.y && !keys.y_old){nameToEnter.append("Y");}
+  if(keys.z && !keys.z_old){nameToEnter.append("Z");}
  
   keys.a_old=keys.a;
   keys.b_old=keys.b;
@@ -241,5 +278,4 @@ void HIGHSCORE::enterName()
   keys.y_old=keys.y;
   keys.z_old=keys.z;
   keys.backspace_old=keys.backspace;
-
 }

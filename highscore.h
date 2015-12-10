@@ -11,7 +11,7 @@
 class HIGHSCORE:public OBJECT
 {
  private:
-  FTPixmapFont * font;
+  FTBitmapFont * font;
  public:
   string text;
   string nameToEnter;
