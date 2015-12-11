@@ -138,8 +138,8 @@ bool ENEMYMISSILE::logic(int step)
 	  if(countdown==0)
 	    {
 	      hostile=1;
-	      xvel=-xtarget*20/sqrt(pow(xtarget,2)+pow(ytarget,2));
-	      yvel=-ytarget*20/sqrt(pow(xtarget,2)+pow(ytarget,2));
+	      xvel=-xtarget*16/sqrt(pow(xtarget,2)+pow(ytarget,2));
+	      yvel=-ytarget*16/sqrt(pow(xtarget,2)+pow(ytarget,2));
 	      alSourceStop(Source.at(3));
 	    }
 	}

@@ -23,7 +23,7 @@ ENEMYBOSS::ENEMYBOSS(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   direction=getDir(xvel,yvel)-90;
     
   type="BOSS";
-  radius=36;
+  radius=42;
   health=30;
   hostile=1;
   dead=0;
@@ -38,6 +38,7 @@ void ENEMYBOSS::render()
 	  glPushMatrix();
 	  glTranslatef(x-(index*2*xvel),y-(index*2*yvel),0);
 	  glRotatef(direction,0,0,1);
+	  glScalef(1.33f,1.33f,0.0f);
 	  
 	  glBegin(GL_TRIANGLE_FAN);
 	  
@@ -57,6 +58,7 @@ void ENEMYBOSS::render()
       glPushMatrix();
       glTranslatef(x,y,0);
       glRotatef(direction,0,0,1);
+      glScalef(1.33f,1.33f,0.0f);
       
       //orange strip
       glBegin(GL_TRIANGLE_FAN);
@@ -103,6 +105,7 @@ void ENEMYBOSS::render()
       glPushMatrix();
       glTranslatef(x,y,0);
       glRotatef(direction,0,0,1);
+      glScalef(1.33f,1.33f,0.0f);
       if(age>60)
 	{
 	  glScalef(((float)age-60),((float)age-60),0);
