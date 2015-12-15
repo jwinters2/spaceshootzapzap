@@ -198,7 +198,7 @@ void ENEMYBOSS::stopAndFire()
     }
   if(age%40==0)
     {
-      for(int index=-3;index<=3;index++)
+      for(int index=-7;index<=7;index++)
 	{
 	      new ENEMYBM(*world,x,y,9*cos((direction+90)*PI/180+(0.25*index)),9*sin((direction+90)*PI/180+(0.25*index)));
 	}
