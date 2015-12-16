@@ -60,7 +60,7 @@ int main(int argc, char** argv)
   LoadALData();
   SetListenerValues();
   
-  GTEXT pauseText("PAUSE",24,(screen.w/2)-62,(screen.h-24)/2,0,0);
+  GTEXT pauseText("PAUSE",32,(screen.w/2),(screen.h-24)/2,0,0,1);
   
   HIGHSCORE scoreBoard(36,80,screen.h-120,0,0);
   
@@ -83,13 +83,13 @@ int main(int argc, char** argv)
       globalScore=0;
       alSourcePlay(Source.at(0));
       
-      startMenuText.push_back(new GTEXT("PRESS ENTER OR 4 TO START",36,(screen.w/2),(screen.h-24)/4,0,0,1));
+      startMenuText.push_back(new GTEXT("PRESS ENTER OR 10 TO START",36,(screen.w/2),(screen.h-24)/4,0,0,1));
       startMenuText.push_back(new GTEXT("WASD - ARROW KEYS:     MOVE",18,(screen.w/2)-250,(screen.h-24)/2+20,0,0,0));
-      startMenuText.push_back(new GTEXT("P - BUTTON 10    :     PAUSE",18,(screen.w/2)-250,(screen.h-24)/2,0,0,0));
+      startMenuText.push_back(new GTEXT("P - BUTTON 9     :     PAUSE",18,(screen.w/2)-250,(screen.h-24)/2,0,0,0));
       startMenuText.push_back(new GTEXT("SPACE - BUTTON 1 :     SHOOT",18,(screen.w/2)-250,(screen.h-24)/2-20,0,0,0));
       startMenuText.push_back(new GTEXT("ESC              :     QUIT GAME LIKE A QUITTER",18,(screen.w/2)-250,(screen.h-24)/2-40,0,0,0));
-      startMenuText.push_back(new GTEXT("SPACE SHOOT",60,(screen.w/2),(screen.h-24)*3/4+20,0,0,1));
-      startMenuText.push_back(new GTEXT("ZAP-ZAP",60,(screen.w/2),(screen.h-24)*3/4-20,0,0,1));
+      startMenuText.push_back(new GTEXT("SPACE SHOOT",60,(screen.w/2),(screen.h-24)*3/4+24,0,0,1));
+      startMenuText.push_back(new GTEXT("ZAP-ZAP",60,(screen.w/2),(screen.h-24)*3/4-24,0,0,1));
 
       scoreBoard.reset();
       
@@ -233,14 +233,14 @@ void handleJoystick()
       return;
     }
   joystick.attack=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[0]==1);
-  joystick.p=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[9]==1);
+  joystick.p=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[8]==1);
   joystick.right=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[0]==1);
   joystick.left=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[0]==-1);
   joystick.up=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[1]==-1);
   joystick.down=(glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count)[1]==1);
-  joystick.enter=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[3]==1);
+  joystick.enter=(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[9]==1);
 
-  if(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[3]==1)
+  if(glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count)[9]==1)
     {
       start_menu=0;
     }

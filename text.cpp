@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <cstring>
 #include <cmath>
 #include <GL/gl.h>
 //#include <freetype2/freetype/config/ftheader.h>
@@ -67,7 +68,7 @@ void GTEXT::render()
   int width=0;
   if(center)
     {
-  width=abs(font->BBox(text.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox(text.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
+      width=abs(font->BBox(text.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox(text.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
     }
   font->Render(text.c_str(),-1,FTPoint(x-(width/2),y,0),FTPoint(2,0,0),FTGL::ALIGN_CENTER); //text doesn't transform, so use FTPoint
   font->Render(text.c_str(),-1,FTPoint(x-(width/2)+1,y,0),FTPoint(2,0,0),FTGL::ALIGN_CENTER); //text doesn't transform, so use FTPoint
@@ -97,5 +98,5 @@ void GTEXT::setText(string text_a)
 
 void GTEXT::setFontSize(int size)
 {
-  font->FaceSize(size);
+  //font->FaceSize(size);
 }

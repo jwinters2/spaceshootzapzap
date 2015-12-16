@@ -13,7 +13,7 @@ class GTEXT:public OBJECT
  public:
   std::string text;
   GTEXT(string,int=12,int=0,int=0,int=0,int=0,bool=0);
-    GTEXT(WORLD&,string,int=12,int=0,int=0,int=0,int=0,bool=0);
+  GTEXT(WORLD&,string,int=12,int=0,int=0,int=0,int=0,bool=0);
   void render();
   bool logic(int);
   void setFontSize(int);
