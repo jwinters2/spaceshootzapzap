@@ -7,8 +7,10 @@
 #include <GL/gl.h>
 //#include <freetype2/freetype/config/ftheader.h>
 //#include <freetype2/ft2build.h>
-#include <FTGL/ftgl.h>
-#include <FTGL/FTGLPixmapFont.h>
+//#include <FTGL/ftgl.h>
+//#include <FTGL/FTGLPixmapFont.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include "person.h"
 #include "object.h"
 #include "world.h"
@@ -25,11 +27,29 @@ HIGHSCORE::HIGHSCORE(int size_a,int x_a,int y_a,int xvel_a,int yvel_a)
   type="HIGHSCORES";
   nameToEnter="";
   layer=6;
-  cout<<"set text"<<endl;
-  font = new FTBitmapFont("Unifont.ttf");
-  cout<<"set font"<<endl;
-  font->FaceSize(size_a);
-  cout<<"end text constructor"<<endl;
+  fontSize=size_a;
+  cout<<"set scoreboard font"<<endl;
+  font = TTF_OpenFont("Unifont.ttf",size_a);
+  TTF_SetFontStyle(font,TTF_STYLE_BOLD);
+  cout<<"set scoreboard surface"<<endl;
+  text="test";
+
+  //SDL_Surface* start;
+  //SDL_Surface* mid;
+  
+  start=TTF_RenderText_Solid(font,text.c_str(),color(255,255,255));
+  mid=SDL_CreateRGBSurface(0,start->w,start->h,32,0x00ff0000,0x0000ff00,0x000000ff,0xff000000);
+  SDL_BlitSurface(start,0,mid,0);
+
+  glGenTextures(1,&texture);
+  glBindTexture(GL_TEXTURE_2D,texture);
+  glTexImage2D(GL_TEXTURE_2D,0,4,start->w,start->h,0,GL_BGRA,GL_UNSIGNED_BYTE,mid->pixels);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  w=start->w;
+  h=start->h;
 
   scoreFile.open("scoreboard.txt");
   string scoreName,scoreScore;
@@ -85,59 +105,43 @@ void HIGHSCORE::render()
   glColor4d(1.0,1.0,1.0,1.0);
   for(int index=0;index<(scoreEntries.size()>11?11:scoreEntries.size());index++)
     {
-      width=abs(font->BBox(scoreEntries.at(index).s1.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox(scoreEntries.at(index).s1.c_str(),-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(0-(width/2)+(screen.w/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(1-(width/2)+(screen.w/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render(scoreEntries.at(index).s1.c_str(),-1,FTPoint(0-(width/2)+(screen.w/4),y-(30*index)+1,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      setText(scoreEntries.at(index).s1,fontSize);
+      drawText(screen.w/4,y-(30*index),1);
 
-      width=abs(font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(0-(width/2)+(screen.w*3/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(1-(width/2)+(screen.w*3/4),y-(30*index),0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render(scoreEntries.at(index).s2.c_str(),-1,FTPoint(0-(width/2)+(screen.w*3/4),y-(30*index)+1,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-
-
+      setText(scoreEntries.at(index).s2,fontSize);
+      drawText(screen.w*3/4,y-(30*index),1);
     }
-  width=abs(font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-  switch(nameToEnter.length())
+
+  /*switch(nameToEnter.length())
     {
     case 0:
-      font->Render("___",-1,FTPoint(0-(width/2)+(screen.w/4),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render("___",-1,FTPoint(1-(width/2)+(screen.w/4),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render("___",-1,FTPoint(0-(width/2)+(screen.w/4),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      setText("___",fontSize,3);
+      drawText(screen.w/4,y-390,1);
       break;
     case 1:
-      font->Render(" __",-1,FTPoint((screen.w/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render(" __",-1,FTPoint((screen.w/4)-(width/2)+1,y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render(" __",-1,FTPoint((screen.w/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint      break;
+      setText(" __",fontSize,3);
+      drawText(screen.w/4,y-390,1);
       break;
     case 2:
-      font->Render("  _",-1,FTPoint((screen.w/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render("  _",-1,FTPoint((screen.w/4)-(width/2)+1,y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-      font->Render("  _",-1,FTPoint((screen.w/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint      break;
-    }
-  width=abs(font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("___",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-  font->Render(nameToEnter.c_str(),-1,FTPoint((screen.w/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-  font->Render(nameToEnter.c_str(),-1,FTPoint((screen.w/4)-(width/2)+1,y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-  font->Render(nameToEnter.c_str(),-1,FTPoint((screen.w/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+      setText("  _",fontSize,3);
+      drawText(screen.w/4,y-390,1);
+      }*/
+  
+  setText(nameToEnter,fontSize,3);
+  drawText(screen.w/4,y-390,1);
 
-  width=abs(font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("_______________",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-  font->Render(intToString(globalScore).c_str(),-1,FTPoint(0+(screen.w*3/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-  font->Render(intToString(globalScore).c_str(),-1,FTPoint(1+(screen.w*3/4)-(width/2),y-390,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
-  font->Render(intToString(globalScore).c_str(),-1,FTPoint(0+(screen.w*3/4)-(width/2),y-389,0),FTPoint(2,0,0)); //text doesn't transform, so use FTPoint
+  setText(intToString(globalScore),fontSize);
+  drawText(screen.w*3/4,y-390,1);
   
   if(enteringName)
     {
-      width=abs(font->BBox("ENTER INITIALS",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("ENTER INITIALS",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-      font->Render("ENTER INITIALS",-1,FTPoint((screen.w/2)-(width/2),y-430,0),FTPoint(2,0,0));
-      font->Render("ENTER INITIALS",-1,FTPoint(1+(screen.w/2)-(width/2),y-430,0),FTPoint(2,0,0));
-      font->Render("ENTER INITIALS",-1,FTPoint((screen.w/2)-(width/2),y-429,0),FTPoint(2,0,0));
+      setText("ENTER INITIALS",fontSize);
+      drawText(screen.w/2,y-430,1);
     }
   else
     {
-      width=abs(font->BBox("PRESS ENTER TO PLAY AGAIN",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Lower().X()-font->BBox("PRESS ENTER TO PLAY AGAIN",-1,FTPoint(x,y,0),FTPoint(2,0,0)).Upper().X());
-      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-(width/2),y-430,0));
-      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-(width/2)+1,y-430,0));
-      font->Render("PRESS ENTER TO PLAY AGAIN",-1,FTPoint((screen.w/2)-(width/2),y-429,0));
+      setText("PRESS ENTER TO PLAY AGAIN",fontSize);
+      drawText(screen.w/2,y-430,1);
     }
 
   glPopAttrib();
@@ -211,7 +215,7 @@ bool HIGHSCORE::logic(int step)
 
 void HIGHSCORE::setFontSize(int size)
 {
-  font->FaceSize(size);
+  fontSize=size;
 }
 
 void HIGHSCORE::enterName()
@@ -278,4 +282,81 @@ void HIGHSCORE::enterName()
   keys.y_old=keys.y;
   keys.z_old=keys.z;
   keys.backspace_old=keys.backspace;
+}
+
+void HIGHSCORE::setText(string text_a,int size_a,int length_a)
+{
+  string textToSet=text_a;
+  while(textToSet.length()<length_a)
+    {
+      textToSet.append("_");
+    }
+  if(textToSet.length()==0)
+    {
+      textToSet=" ";
+    }
+  //cout<<"start setText"<<endl;
+  //SDL_Surface* start;
+  //SDL_Surface* mid;
+
+  //cout<<"start making surfaces: "<<textToSet<<" ("<<textToSet.length()<<")"<<endl;
+  start=TTF_RenderText_Solid(font,textToSet.c_str(),color(255,255,255));
+  mid=SDL_CreateRGBSurface(0,start->w,start->h,32,0x00ff0000,0x0000ff00,0x000000ff,0xff000000);
+  SDL_BlitSurface(start,0,mid,0);
+
+  glGenTextures(1,&texture);
+  glBindTexture(GL_TEXTURE_2D,texture);
+  glTexImage2D(GL_TEXTURE_2D,0,4,start->w,start->h,0,GL_BGRA,GL_UNSIGNED_BYTE,mid->pixels);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  w=start->w;
+  h=start->h;
+}
+
+void HIGHSCORE::drawText(int x_a,int y_a,bool center)
+{
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  glPushMatrix();
+  glTranslatef(x_a,y_a,0);
+    for(int index=0;index<=1;index++)
+      {
+	glBegin(GL_QUADS);
+	glColor3f(1.0f,1.0f,1.0f);
+	if(center)
+	  {
+	    glTexCoord2f(0.0f,1.0f);
+	    glVertex3f(-w/2,index,0);
+	    glTexCoord2f(1.0f,1.0f);
+	    glVertex3f(w/2,index,0);
+	    glTexCoord2f(1.0f,0.0f);
+	    glVertex3f(w/2,h+index,0);
+	    glTexCoord2f(0.0f,0.0f);
+	    glVertex3f(-w/2,h+index,0);
+	  }
+	else
+	  {
+	    glTexCoord2f(0.0f,1.0f);
+	    glVertex3f(0,index,0);
+	    glTexCoord2f(1.0f,1.0f);
+	    glVertex3f(w,index,0);
+	    glTexCoord2f(1.0f,0.0f);
+	    glVertex3f(w,h+index,0);
+	    glTexCoord2f(0.0f,0.0f);
+	    glVertex3f(0,h+index,0);
+	  }
+	glEnd();
+      }
+    glPopMatrix();
+    
+    glDisable(GL_TEXTURE_2D);
+}
+
+SDL_Color HIGHSCORE::color(int r,int g,int b)
+{
+  SDL_Color cl={r,g,b};
+  return cl;
 }

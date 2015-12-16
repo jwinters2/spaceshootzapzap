@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <GLFW/glfw3.h>
 
 //#include "world.h"
 //#include "person.h"

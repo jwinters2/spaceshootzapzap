@@ -3,6 +3,7 @@
 #include <cstdlib> //atoi
 #include <string>
 #include <vector>
+#include <SDL/SDL.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
@@ -91,6 +92,7 @@ extern ALfloat SourceVel[];
 extern ALfloat ListenerPos[];
 extern ALfloat ListenerVel[];
 extern ALfloat ListenerOri[];
+extern SDL_Surface* window;
 
 void quitGame();
 float getDir(float,float);

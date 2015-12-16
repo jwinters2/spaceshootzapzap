@@ -1,11 +1,13 @@
 #include <cmath>
+#include <iostream>
 #include <iomanip>
 #include <cstdlib>
 #include <string>
 #include <cstring>
 #include <sstream>
 #include <vector>
-#include <GLFW/glfw3.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
@@ -36,15 +38,24 @@ ALfloat ListenerPos[]={0.0,0.0,0.0};
 ALfloat ListenerVel[]={0.0,0.0,0.0};
 ALfloat ListenerOri[]={0.0,0.0,-1.0,0.0,1.0,0.0};
 
+SDL_Surface* window;
+
 int count;
-const unsigned char* axes=glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count);
-const float* dpad=glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count);
+//const unsigned char* axes=glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count);
+//const float* dpad=glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count);
 
 
 void quitGame()
 {
-  glfwTerminate();
+  //glfwTerminate();
+  std::cout<<"killing AL data"<<std::endl;
   KillALData();
+  TTF_Quit();
+  std::cout<<"freeing surface"<<std::endl;
+  SDL_FreeSurface(window);
+  std::cout<<"quitting SDL"<<std::endl;
+  SDL_Quit();
+  std::cout<<"exiting"<<std::endl;
   exit(0);
 }
 

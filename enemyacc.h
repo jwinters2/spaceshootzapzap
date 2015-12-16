@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <GL/gl.h>
-#include <GLFW/glfw3.h>
 using namespace std;
 
 #include "object.h"

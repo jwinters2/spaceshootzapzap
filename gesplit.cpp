@@ -3,9 +3,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h> //usleep(250000)
+#include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL_ttf.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GLFW/glfw3.h>
+//#include <GLFW/glfw3.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 //#include <AL/alu.h>
@@ -24,12 +27,14 @@
 //#include "graphics.h"
 using namespace std;
 
-void handleKeypress(GLFWwindow*,int,int,int,int);
-void handleJoystick();
-void quitGame(GLFWwindow*);
-
 WORLD new_world;
 box WindowSize;
+const Uint8* keystate=SDL_GetKeyState(NULL);
+SDL_Joystick* joy;
+SDL_Event event;
+
+void handleKeypress();
+void handleJoystick();
 
 int main(int argc, char** argv)
 {
@@ -41,24 +46,32 @@ int main(int argc, char** argv)
   int qwerty=100;
   srand(time(NULL));
 
-  glfwInit();
+  SDL_Init(SDL_INIT_EVERYTHING);
+  window=SDL_SetVideoMode(screen.w,screen.h,32,SDL_DOUBLEBUF|SDL_OPENGL);
+  TTF_Init();
+  SDL_WM_SetCaption("space_shoot_zap_zap.exe", NULL );
 
-  GLFWwindow* window=glfwCreateWindow(screen.w,screen.h,"space_shoot_zap_zap.exe",NULL,NULL);
-  glfwMakeContextCurrent(window);
+  //glfwInit();
 
-  glEnable (GL_BLEND);
-  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //FWwindow* window=glfwCreateWindow(screen.w,screen.h,"space_shoot_zap_zap.exe",NULL,NULL);
+  //glfwMakeContextCurrent(window);
+
+  glEnable(GL_BLEND);
+  glEnable(GL_TEXTURE_2D);
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluOrtho2D(0,screen.w,0,screen.h);
 
-  glfwSetKeyCallback(window,handleKeypress);
-  glfwSetWindowCloseCallback(window,quitGame);
+  //glfwSetKeyCallback(window,handleKeypress);
+  //glfwSetWindowCloseCallback(window,quitGame);
 
   alutInit(&argc,argv);
   LoadALData();
   SetListenerValues();
+
+  joy=SDL_JoystickOpen(0);
   
   GTEXT pauseText("PAUSE",32,(screen.w/2),(screen.h-24)/2,0,0,1);
   
@@ -94,7 +107,7 @@ int main(int argc, char** argv)
       scoreBoard.reset();
       
       objects.push_back(new PLAYER(new_world,screen.w/2,screen.h/2,0,0));
-      objects.push_back(new GTEXT(new_world,("SCORE "+intToString(globalScore)),36,0,screen.h-24,0,0,0));
+      objects.push_back(new GTEXT(new_world,("SCORE "+intToString(globalScore)),36,0,screen.h-36,0,0,0));
       //stars
       for(int i=0;i<50;i++)
 	{
@@ -104,7 +117,8 @@ int main(int argc, char** argv)
       while(playing)
 	{
 	  handleJoystick();
-	  glfwPollEvents();
+	  handleKeypress();
+	  //glfwPollEvents();
 	  if(start_menu)
 	    {
 	      for(int index=0;index<startMenuText.size();index++)
@@ -117,6 +131,7 @@ int main(int argc, char** argv)
 	      pauseText.render();
 	      while(!gamePause)
 		{
+		  handleKeypress();
 		}
 	    }
 	  else if(gameScoreBoard)
@@ -131,19 +146,104 @@ int main(int argc, char** argv)
 	      new_world.gamelogic();
 	      new_world.render();
 	    }
-	  glfwSwapBuffers(window);
-
+	  SDL_GL_SwapBuffers();
+	  SDL_Flip(window);
+	  //glfwSwapBuffers(window);
+	  /*
 	  while(glfwGetTime()<(double)0.01666667)
 	    {
 	    }
 	  glfwSetTime(0);
+	  */
 	}
     }
   
   return 0;
 }
 
-void handleKeypress(GLFWwindow* window, int key, int scancode, int action, int mods)
+void handleKeypress()
+{
+  //* while(SDL_PollEvent(&event))
+  SDL_PollEvent(&event);
+    {
+      switch(event.type)
+	{
+	case SDL_QUIT:
+	  quitGame();
+	}
+    }//*/
+  SDL_PumpEvents();
+  SDL_JoystickUpdate();
+  //cout<<SDL_JoystickOpened(0)<<endl;
+  if(keystate[SDLK_ESCAPE])
+    {
+      cout<<"escape was pressed"<<endl;
+      quitGame();
+    }
+  if(keystate[SDLK_RETURN] || SDL_JoystickGetButton(joy,9))
+    {
+      start_menu=0;
+    }
+  keys.up   =(keystate[SDLK_UP]    || keystate[SDLK_w] || SDL_JoystickGetAxis(joy,1)<0);
+  keys.down =(keystate[SDLK_DOWN]  || keystate[SDLK_s] || SDL_JoystickGetAxis(joy,1)>0);
+  keys.left =(keystate[SDLK_LEFT]  || keystate[SDLK_a] || SDL_JoystickGetAxis(joy,0)<0);
+  keys.right=(keystate[SDLK_RIGHT] || keystate[SDLK_d] || SDL_JoystickGetAxis(joy,0)>0);
+  keys.enter=keystate[SDLK_RETURN];
+  keys.attack=(keystate[SDLK_SPACE] || SDL_JoystickGetButton(joy,0));
+  if(keys.attack && !keys.attack_old)
+    {
+      attackFrame=globalFrame;
+    }
+  keys.a=keystate[SDLK_a];
+  keys.b=keystate[SDLK_b];
+  keys.c=keystate[SDLK_c];
+  keys.d=keystate[SDLK_d];
+  keys.e=keystate[SDLK_e];
+  keys.f=keystate[SDLK_f];
+  keys.g=keystate[SDLK_g];
+  keys.h=keystate[SDLK_h];
+  keys.i=keystate[SDLK_i];
+  keys.j=keystate[SDLK_j];
+  keys.k=keystate[SDLK_k];
+  keys.l=keystate[SDLK_l];
+  keys.m=keystate[SDLK_m];
+  keys.n=keystate[SDLK_n];
+  keys.o=keystate[SDLK_o];
+  keys.p=(keystate[SDLK_p]||((!gameScoreBoard) && SDL_JoystickGetButton(joy,8)));
+  keys.q=keystate[SDLK_q];
+  keys.r=keystate[SDLK_r];
+  keys.s=keystate[SDLK_s];
+  keys.t=keystate[SDLK_t];
+  keys.u=keystate[SDLK_u];
+  keys.v=keystate[SDLK_v];
+  keys.w=keystate[SDLK_w];
+  keys.x=keystate[SDLK_x];
+  keys.y=keystate[SDLK_y];
+  keys.z=keystate[SDLK_z];
+  keys.backspace=keystate[SDLK_BACKSPACE];
+  if (keys.p&&(!keys.p_old)&&(!gameScoreBoard)&&(!start_menu))
+    {
+      if(gamePause)
+	{
+	  alSourcePlay(Source.at(0));
+	}
+      else
+	{
+	  alSourcePause(Source.at(0));
+	}
+      gamePause=!gamePause;
+    }
+
+  keys.attack_old=keys.attack;
+  if(!gameScoreBoard){keys.p_old=keys.p;}
+  keys.right_old=keys.right;
+  keys.left_old=keys.left;
+  keys.up_old=keys.up;
+  keys.down_old=keys.down;
+  keys.enter_old=keys.enter;
+  //keys.backspace_old=keys.backspace;
+}
+/*
 {
   //int joystick=glfwJoystickPresent(GLFW_JOYSTICK_1);
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -225,8 +325,12 @@ void handleKeypress(GLFWwindow* window, int key, int scancode, int action, int m
       keys.attack=action; 
     }
 }
+*/
 
 void handleJoystick()
+{
+}
+/*
 {
   if(glfwJoystickPresent(GLFW_JOYSTICK_1)==GL_FALSE)
     {
@@ -290,10 +394,4 @@ void handleJoystick()
   joystick.down_old=joystick.down;
   joystick.enter_old=joystick.enter;
 }
-
-void quitGame(GLFWwindow*)
-{
-  glfwTerminate();
-  KillALData();
-  exit(0);
-}
+*/
