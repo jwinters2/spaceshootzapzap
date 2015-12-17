@@ -193,6 +193,6 @@ void PLAYER::shootBullets()
       new BULLET(*world,x,y,0,-12);
       new BULLET(*world,x,y,12,0);
       new BULLET(*world,x,y,-12,0);
-      alSourcePlay(Source.at(1));
+      Mix_PlayChannel(-1,shootWAV,0);
     }
 }

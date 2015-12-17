@@ -6,13 +6,14 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL_mixer.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 //#include <GLFW/glfw3.h>
-#include <AL/al.h>
-#include <AL/alc.h>
+//#include <AL/al.h>
+//#include <AL/alc.h>
 //#include <AL/alu.h>
-#include <AL/alut.h>
+//#include <AL/alut.h>
 #include "object.h"
 //#include "graphics.h"
 #include "world.h"
@@ -24,6 +25,7 @@
 #include "star.h"
 #include "text.h"
 #include "highscore.h"
+#include "glyph.h"
 //#include "graphics.h"
 using namespace std;
 
@@ -50,6 +52,8 @@ int main(int argc, char** argv)
   window=SDL_SetVideoMode(screen.w,screen.h,32,SDL_DOUBLEBUF|SDL_OPENGL);
   TTF_Init();
   SDL_WM_SetCaption("space_shoot_zap_zap.exe", NULL );
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+  long timer=0;
 
   //glfwInit();
 
@@ -67,11 +71,17 @@ int main(int argc, char** argv)
   //glfwSetKeyCallback(window,handleKeypress);
   //glfwSetWindowCloseCallback(window,quitGame);
 
-  alutInit(&argc,argv);
-  LoadALData();
-  SetListenerValues();
+  Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096);
+  initSounds();
+  //alutInit(&argc,argv);
+  //LoadALData();
+  //SetListenerValues();
 
   joy=SDL_JoystickOpen(0);
+
+  glyph_18.init(18);
+  glyph_36.init(36);
+  glyph_60.init(60);
   
   GTEXT pauseText("PAUSE",32,(screen.w/2),(screen.h-24)/2,0,0,1);
   
@@ -80,7 +90,7 @@ int main(int argc, char** argv)
   vector<GTEXT*> startMenuText;
   vector<OBJECT*> objects;
   
-  while(true)
+  while(!quit)
     {
       glClearColor(0.0f,0.0f,0.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -89,13 +99,25 @@ int main(int argc, char** argv)
       start_menu=1;
       gamePause=0;
       gameScoreBoard=0;
+      for(int index=0;index<startMenuText.size();index++)
+	{
+	  startMenuText.at(index)->clean();
+	  delete startMenuText.at(index);
+	}
+      for(int index=0;index<objects.size();index++)
+	{
+	  if(objects.at(index)->type.compare("TYPE")==0)
+	    {
+	      objects.at(index)->clean();
+	      delete startMenuText.at(index);
+	    }
+	}
       startMenuText.clear();
       objects.clear();
       new_world.objects.clear();
       globalFrame=0;
       globalScore=0;
-      alSourcePlay(Source.at(0));
-      
+      Mix_PlayMusic(music,-1);      
       startMenuText.push_back(new GTEXT("PRESS ENTER OR 10 TO START",36,(screen.w/2),(screen.h-24)/4,0,0,1));
       startMenuText.push_back(new GTEXT("WASD - ARROW KEYS:     MOVE",18,(screen.w/2)-250,(screen.h-24)/2+20,0,0,0));
       startMenuText.push_back(new GTEXT("P - BUTTON 9     :     PAUSE",18,(screen.w/2)-250,(screen.h-24)/2,0,0,0));
@@ -136,8 +158,8 @@ int main(int argc, char** argv)
 	    }
 	  else if(gameScoreBoard)
 	    {
-	      alSourceStop(Source.at(0));
-	      alSourceStop(Source.at(3));
+	      Mix_HaltMusic();
+	      Mix_HaltChannel(-1);
 	      scoreBoard.logic(0);
 	      scoreBoard.render();
 	    }
@@ -147,17 +169,42 @@ int main(int argc, char** argv)
 	      new_world.render();
 	    }
 	  SDL_GL_SwapBuffers();
-	  SDL_Flip(window);
-	  //glfwSwapBuffers(window);
-	  /*
-	  while(glfwGetTime()<(double)0.01666667)
+	  glClear(0);
+	  //SDL_Flip(window);
+	  if((SDL_GetTicks()-timer)<1000.0f/60)
 	    {
+	      SDL_Delay((1000.0f/60)-(SDL_GetTicks()-timer));
 	    }
-	  glfwSetTime(0);
-	  */
+	  cout<<1000/(SDL_GetTicks()-timer)<<" fps"<<endl;
+	  timer=SDL_GetTicks();
 	}
     }
-  
+  cout<<"KillAlData()"<<endl;
+  KillALData();
+  cout<<"startMenuText: "<<startMenuText.size()<<endl;
+  for(int index=0;index<startMenuText.size();index++)
+    {
+      //cout<<"startMenuText.at("<<index<<")"<<endl;
+      startMenuText.at(index)->clean();
+    }
+  cout<<"objects"<<endl;
+  for(int index=0;index<objects.size();index++)
+    {
+      //cout<<"objects.at("<<index<<")"<<endl;
+      if(objects.at(index)->type.compare("TEXT")==0)
+	{
+	  objects.at(index)->clean();
+	}
+    }
+  cout<<"scoreBoard.clean()"<<endl;
+  scoreBoard.clean();
+  cout<<"pauseText.clean()"<<endl;
+  pauseText.clean();
+  TTF_Quit();
+  //std::cout<<"freeing surface"<<std::endl;
+  SDL_FreeSurface(window);
+  //std::cout<<"quitting SDL"<<std::endl;
+  SDL_Quit();
   return 0;
 }
 
@@ -225,11 +272,17 @@ void handleKeypress()
     {
       if(gamePause)
 	{
-	  alSourcePlay(Source.at(0));
+	  if(Mix_PausedMusic()==1)
+	    {
+	      Mix_ResumeMusic();
+	    }
 	}
       else
 	{
-	  alSourcePause(Source.at(0));
+	  if(Mix_PausedMusic()==0)
+	    {
+	      Mix_PauseMusic();
+	    }
 	}
       gamePause=!gamePause;
     }
@@ -240,7 +293,7 @@ void handleKeypress()
   keys.left_old=keys.left;
   keys.up_old=keys.up;
   keys.down_old=keys.down;
-  keys.enter_old=keys.enter;
+  if(!gameScoreBoard){keys.enter_old=keys.enter;}
   //keys.backspace_old=keys.backspace;
 }
 /*

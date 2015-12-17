@@ -128,6 +128,6 @@ void OBJECT::render()
 
 void OBJECT::die()
 {
-  alSourcePlay(Source.at(2));
+  Mix_PlayChannel(-1,explosionWAV,0);
   world->deleteobject(id);
 }

@@ -114,8 +114,8 @@ void ENEMYBOSS::render()
       glBegin(GL_TRIANGLE_FAN);
       if(age>60)
 	{
-	  alSourceStop(Source.at(5));
-	  alSourcePlay(Source.at(6));
+	  //alSourceStop(Source.at(5));
+	  Mix_PlayChannel(-1,explosionBigWAV,0);
 	  glColor4f(1.0f,1.0f,1.0f,1.0f-((float)age-60)/20);//FFFFFF
 	}
       else
@@ -224,7 +224,7 @@ void ENEMYBOSS::die()
 	  world->objects.at(index)->hostile=0;
 	}
     }
-  alSourcePlay(Source.at(5));
+  Mix_PlayChannel(-1,heatingWAV,0);
   hostile=0;
   dead=1;
   age=0;

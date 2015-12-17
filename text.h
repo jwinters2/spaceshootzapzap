@@ -4,6 +4,7 @@
 //#include <FTGL/ftgl.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include "glyph.h"
 
 #include "object.h"
 
@@ -11,7 +12,10 @@ class GTEXT:public OBJECT
 {
  private:
   TTF_Font *font;
-  SDL_Surface *textsurface;
+  //SDL_Surface *textsurface;
+  SDL_Surface* start;
+  SDL_Surface* mid;
+  GLYPH* glyph;
   GLuint texture;
   bool center;
   int w,h;
@@ -23,5 +27,6 @@ class GTEXT:public OBJECT
   bool logic(int);
   void setFontSize(int);
   void setText(string);
+  void clean();
   SDL_Color color(int,int,int);
 };

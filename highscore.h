@@ -9,6 +9,7 @@
 #include "object.h"
 #include "text.h"
 #include "globals.h"
+#include "glyph.h"
 
 class HIGHSCORE:public OBJECT
 {
@@ -18,6 +19,7 @@ class HIGHSCORE:public OBJECT
   SDL_Surface* start;
   SDL_Surface* mid;
   GLuint texture;
+  GLYPH* glyph;
   bool center;
   int w,h;
   int fontSize;
@@ -35,5 +37,6 @@ class HIGHSCORE:public OBJECT
   void setFontSize(int);
   void enterName();
   void reset();
+  void clean();
   SDL_Color color(int,int,int);
 };

@@ -20,7 +20,7 @@ ENEMYMISSILE::ENEMYMISSILE(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
 {
   radius=12;
   health=1;
-  alSourcePlay(Source.at(3));
+  Mix_PlayChannel(-1,beepbeepbeepWAV,3);
   countdown=60;
   hostile=0;
 }
@@ -132,15 +132,15 @@ bool ENEMYMISSILE::logic(int step)
     case 0:
       if(countdown>0)
 	{
-	  alSourcePause(Source.at(3));
-	  alSourcePlay(Source.at(3));
+	  //alSourcePause(Source.at(3));
+	  //Mix_PlayChannel(-1,beepbeepbeepWAV,0);
 	  countdown--;
 	  if(countdown==0)
 	    {
 	      hostile=1;
 	      xvel=-xtarget*16/sqrt(pow(xtarget,2)+pow(ytarget,2));
 	      yvel=-ytarget*16/sqrt(pow(xtarget,2)+pow(ytarget,2));
-	      alSourceStop(Source.at(3));
+	      Mix_HaltChannel(-1);
 	    }
 	}
       else

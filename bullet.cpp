@@ -114,7 +114,7 @@ void BULLET::checkCollision()
 	    }
 	  else
 	    {
-	      alSourcePlay(Source.at(4)); //hit.wav
+	      Mix_PlayChannel(-1,hitWAV,0);
 	    }
 	  world->deleteobject(id);
 	}

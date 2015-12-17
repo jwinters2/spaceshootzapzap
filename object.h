@@ -30,4 +30,5 @@ public:
   virtual void setText(string){};
   virtual void addToScore(){};
   virtual void die();
+  virtual void clean(){};
 };

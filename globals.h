@@ -4,9 +4,11 @@
 #include <string>
 #include <vector>
 #include <SDL/SDL.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+#include <SDL/SDL_mixer.h>
+#include "glyph.h"
+//#include <AL/al.h>
+//#include <AL/alc.h>
+//#include <AL/alut.h>
 
 struct box
 {
@@ -67,16 +69,11 @@ struct stringPair
   std::string s2;
 };
 
-struct soundFile
-{
-  std::string fileName;
-  ALboolean loop;
-};
-
 extern keyboard keys;
 extern keyboard joystick;
 extern box screen;
 extern bool playing;
+extern bool quit;
 extern int globalFrame;
 extern int attackFrame;
 extern int globalScore;
@@ -86,13 +83,18 @@ extern bool gameScoreBoard;
 extern int count;
 extern const unsigned char* axes;
 extern const float* dpad;
-extern std::vector<ALuint> Source,Buffer;
-extern ALfloat SourcePos[];
-extern ALfloat SourceVel[];
-extern ALfloat ListenerPos[];
-extern ALfloat ListenerVel[];
-extern ALfloat ListenerOri[];
+extern Mix_Music* music;
+extern Mix_Chunk* shootWAV;
+extern Mix_Chunk* explosionWAV;
+extern Mix_Chunk* beepbeepbeepWAV;
+extern Mix_Chunk* hitWAV;
+extern Mix_Chunk* heatingWAV;
+extern Mix_Chunk* explosionBigWAV;
 extern SDL_Surface* window;
+
+extern GLYPH glyph_18;
+extern GLYPH glyph_36;
+extern GLYPH glyph_60;
 
 void quitGame();
 float getDir(float,float);
@@ -100,8 +102,9 @@ float dotProduct(float,float,float,float);
 bool collideCircles(float,float,float,float,float);
 std::string intToString(int);
 std::string leadingZeros(int,int);
-ALboolean LoadALData();
-void SetListenerValues();
+void initSounds();
+//ALboolean LoadALData();
+//void SetListenerValues();
 void KillALData();
-soundFile soundFileInit(std::string,ALboolean);
+//soundFile soundFileInit(std::string,ALboolean);
 bool sortScores(stringPair,stringPair);

@@ -8,9 +8,11 @@
 #include <vector>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+#include <SDL/SDL_mixer.h>
+//#include <AL/al.h>
+//#include <AL/alc.h>
+//#include <AL/alut.h>
+#include "glyph.h"
 #include "globals.h"
 
 box screen;
@@ -27,18 +29,24 @@ int globalFrame;
 int attackFrame;
 int globalScore;
 bool playing=1;
+bool quit=0;
 bool start_menu=1;
 bool gamePause=0;
 bool gameScoreBoard=0;
 
-std::vector<ALuint> Source,Buffer;
-ALfloat SourcePos[]={0.0,0.0,0.0};
-ALfloat SourceVel[]={0.0,0.0,0.0};
-ALfloat ListenerPos[]={0.0,0.0,0.0};
-ALfloat ListenerVel[]={0.0,0.0,0.0};
-ALfloat ListenerOri[]={0.0,0.0,-1.0,0.0,1.0,0.0};
+Mix_Music* music;
+Mix_Chunk* shootWAV;
+Mix_Chunk* explosionWAV;
+Mix_Chunk* beepbeepbeepWAV;
+Mix_Chunk* hitWAV;
+Mix_Chunk* heatingWAV;
+Mix_Chunk* explosionBigWAV;
 
 SDL_Surface* window;
+
+GLYPH glyph_18;
+GLYPH glyph_36;
+GLYPH glyph_60;
 
 int count;
 //const unsigned char* axes=glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count);
@@ -47,7 +55,9 @@ int count;
 
 void quitGame()
 {
-  //glfwTerminate();
+  playing=false;
+  quit=true;
+  /* //glfwTerminate();
   std::cout<<"killing AL data"<<std::endl;
   KillALData();
   TTF_Quit();
@@ -56,7 +66,18 @@ void quitGame()
   std::cout<<"quitting SDL"<<std::endl;
   SDL_Quit();
   std::cout<<"exiting"<<std::endl;
-  exit(0);
+  exit(0);*/
+}
+
+void initSounds()
+{
+  music=Mix_LoadMUS("music.wav");
+  shootWAV=Mix_LoadWAV("shoot.wav");
+  explosionWAV=Mix_LoadWAV("explosion.wav");
+  beepbeepbeepWAV=Mix_LoadWAV("beepbeepbeep.wav");
+  hitWAV=Mix_LoadWAV("hit.wav");
+  heatingWAV=Mix_LoadWAV("heating.wav");
+  explosionBigWAV=Mix_LoadWAV("explosion_big.wav");
 }
 
 float getDir(float x,float y)
@@ -97,76 +118,16 @@ std::string leadingZeros(int num,int length)
   return "";
 }
 
-ALboolean LoadALData()
-{
-  ALenum format;
-  ALsizei size;
-  ALvoid* data;
-  ALsizei freq;
-  ALboolean loop;
-
-  std::vector<soundFile> sFiles;
-  sFiles.push_back(soundFileInit("music.wav",AL_TRUE));
-  sFiles.push_back(soundFileInit("shoot.wav",AL_FALSE));
-  sFiles.push_back(soundFileInit("explosion.wav",AL_FALSE));
-  sFiles.push_back(soundFileInit("beepbeepbeep.wav",AL_TRUE));
-  sFiles.push_back(soundFileInit("hit.wav",AL_FALSE));
-  sFiles.push_back(soundFileInit("heating.wav",AL_FALSE));
-  sFiles.push_back(soundFileInit("explosion_big.wav",AL_FALSE));
-
-  for(int index=0;index<sFiles.size();index++)
-    {
-      Buffer.push_back(0);
-      alGenBuffers(1,&Buffer.at(index));
-      Buffer.at(index)=alutCreateBufferFromFile(sFiles.at(index).fileName.c_str());
-    }
-  /*
-    alutLoadWAVFile("music.wav",&format,&size,&data,&freq,&loop);
-    alBufferData(Buffer,format,data,size,freq);
-    alutUnloadWAV(format,data,size,freq);
-  */
-  for(int index=0;index<Buffer.size();index++)
-    {
-      Source.push_back(0);
-      alGenSources(1,&Source.at(index));
-      
-      alSourcei(Source.at(index),AL_BUFFER,Buffer.at(index));
-      alSourcef(Source.at(index),AL_PITCH,1.0f);
-      alSourcef(Source.at(index),AL_GAIN,1.0f);
-      alSourcefv(Source.at(index),AL_POSITION,SourcePos);
-      alSourcefv(Source.at(index),AL_VELOCITY,SourceVel);
-      alSourcei(Source.at(index),AL_LOOPING,sFiles.at(index).loop);
-    }
-  
-  return AL_TRUE;
-}
-
-void SetListenerValues()
-{
-  alListenerfv(AL_POSITION,ListenerPos);
-  alListenerfv(AL_VELOCITY,ListenerVel);
-  alListenerfv(AL_ORIENTATION,ListenerOri);
-}
-
 void KillALData()
 {
-  for(int index=0;index<Buffer.size();index++)
-    {
-      alDeleteBuffers(1,&Buffer.at(index));
-    }
-  for(int index=0;index<Source.size();index++)
-    {
-      alDeleteSources(1,&Source.at(index));
-    }
-  alutExit();
-}
-
-soundFile soundFileInit(std::string fileName_a,ALboolean loop_a)
-{
-  soundFile sf;
-  sf.fileName=fileName_a;
-  sf.loop=loop_a;
-  return sf;
+  Mix_FreeMusic(music);
+  Mix_FreeChunk(shootWAV);
+  Mix_FreeChunk(explosionWAV);
+  Mix_FreeChunk(beepbeepbeepWAV);
+  Mix_FreeChunk(hitWAV);
+  Mix_FreeChunk(heatingWAV);
+  Mix_FreeChunk(explosionBigWAV);
+  Mix_CloseAudio();
 }
 
 bool sortScores(stringPair a,stringPair b)

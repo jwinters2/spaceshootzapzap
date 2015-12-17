@@ -27,14 +27,25 @@ GTEXT::GTEXT(WORLD& world_a,string text_a,int size_a,int x_a,int y_a,int xvel_a,
   cout<<"begin text constructor"<<endl;
   text=text_a;
   cout<<"set text"<<endl;
+  glyph=&glyph_36;
+  switch(size_a)
+    {
+    case 18:
+        glyph=&glyph_18;
+	break;
+    case 36:
+        glyph=&glyph_36;
+	break;
+    case 60:
+        glyph=&glyph_60;
+	break;
+    }
+  /*
   font = TTF_OpenFont("Unifont.ttf",size_a);
   TTF_SetFontStyle(font,TTF_STYLE_BOLD);
   cout<<"set font"<<endl;
   //font->FaceSize(size_a);
   cout<<"end text constructor"<<endl;
-
-  SDL_Surface* start;
-  SDL_Surface* mid;
   //int w,h;
   
   start=TTF_RenderText_Solid(font,text.c_str(),color(255,255,255));
@@ -49,7 +60,7 @@ GTEXT::GTEXT(WORLD& world_a,string text_a,int size_a,int x_a,int y_a,int xvel_a,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   w=start->w;
-  h=start->h;
+  h=start->h;*/
 }
 
 GTEXT::GTEXT(string text_a,int size_a,int x_a,int y_a,int xvel_a,int yvel_a,bool center_a)
@@ -62,14 +73,27 @@ GTEXT::GTEXT(string text_a,int size_a,int x_a,int y_a,int xvel_a,int yvel_a,bool
   cout<<"begin text constructor"<<endl;
   text=text_a;
   cout<<"set text"<<endl;
-  font = TTF_OpenFont("Unifont.ttf",size_a);
+  glyph=&glyph_36;
+  switch(size_a)
+    {
+    case 18:
+        glyph=&glyph_18;
+	break;
+    case 36:
+        glyph=&glyph_36;
+	break;
+    case 60:
+        glyph=&glyph_60;
+	break;
+    }
+  /*font = TTF_OpenFont("Unifont.ttf",size_a);
   TTF_SetFontStyle(font,TTF_STYLE_BOLD);
   cout<<"set font"<<endl;
   //font->FaceSize(size_a);
   cout<<"end text constructor"<<endl;
 
-  SDL_Surface* start;
-  SDL_Surface* mid;
+  //SDL_Surface* start;
+  //SDL_Surface* mid;
   
   start=TTF_RenderText_Solid(font,text.c_str(),color(255,255,255));
   mid=SDL_CreateRGBSurface(0,start->w,start->h,32,0x00ff0000,0x0000ff00,0x000000ff,0xff000000);
@@ -83,11 +107,25 @@ GTEXT::GTEXT(string text_a,int size_a,int x_a,int y_a,int xvel_a,int yvel_a,bool
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   w=start->w;
-  h=start->h;
+  h=start->h;*/
 }
 
 void GTEXT::render()
 {
+  if(center)
+    {
+       for(int index=0;index<text.length();index++)
+	{
+	  glyph->render(text.substr(index,1),x-((glyph->width*text.length()/2))+(glyph->width*index),y);
+	}
+    }
+  else
+    {
+      for(int index=0;index<text.length();index++)
+	{
+	  glyph->render(text.substr(index,1),x+(glyph->width*index),y);
+	}
+    }
   /*glPushMatrix();
   glTranslatef(x,y,0);
   
@@ -116,7 +154,7 @@ void GTEXT::render()
 
   
   glPopAttrib();
-  glPopMatrix();*/
+  glPopMatrix();
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -153,6 +191,7 @@ void GTEXT::render()
     glPopMatrix();
     
     glDisable(GL_TEXTURE_2D);
+  */
 }
 
 bool GTEXT::logic(int step)
@@ -171,6 +210,23 @@ bool GTEXT::logic(int step)
 void GTEXT::setText(string text_a)
 {
   text=text_a;
+  
+  /*start=TTF_RenderText_Solid(font,text.c_str(),color(255,255,255));
+  mid=SDL_CreateRGBSurface(0,start->w,start->h,32,0x00ff0000,0x0000ff00,0x000000ff,0xff000000);
+  SDL_BlitSurface(start,0,mid,0);
+
+  //glGenTextures(1,&texture);
+  //glBindTexture(GL_TEXTURE_2D,texture);
+  glTexImage2D(GL_TEXTURE_2D,0,4,start->w,start->h,0,GL_BGRA,GL_UNSIGNED_BYTE,mid->pixels);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  w=start->w;
+  h=start->h;
+
+  SDL_FreeSurface(start);
+  SDL_FreeSurface(mid);*/
 }
 
 void GTEXT::setFontSize(int size)
@@ -182,4 +238,11 @@ SDL_Color GTEXT::color(int r,int g,int b)
 {
   SDL_Color cl={r,g,b};
   return cl;
+}
+
+void GTEXT::clean()
+{
+  /*SDL_FreeSurface(start);
+  SDL_FreeSurface(mid);
+  TTF_CloseFont(font);*/
 }

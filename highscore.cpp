@@ -29,7 +29,21 @@ HIGHSCORE::HIGHSCORE(int size_a,int x_a,int y_a,int xvel_a,int yvel_a)
   layer=6;
   fontSize=size_a;
   cout<<"set scoreboard font"<<endl;
-  font = TTF_OpenFont("Unifont.ttf",size_a);
+
+  glyph=&glyph_36;
+  switch(size_a)
+    {
+    case 18:
+        glyph=&glyph_18;
+	break;
+    case 36:
+        glyph=&glyph_36;
+	break;
+    case 60:
+        glyph=&glyph_60;
+	break;
+    }
+  /*font = TTF_OpenFont("Unifont.ttf",size_a);
   TTF_SetFontStyle(font,TTF_STYLE_BOLD);
   cout<<"set scoreboard surface"<<endl;
   text="test";
@@ -50,6 +64,9 @@ HIGHSCORE::HIGHSCORE(int size_a,int x_a,int y_a,int xvel_a,int yvel_a)
 
   w=start->w;
   h=start->h;
+
+  SDL_FreeSurface(start);
+  SDL_FreeSurface(mid);*/
 
   scoreFile.open("scoreboard.txt");
   string scoreName,scoreScore;
@@ -83,10 +100,11 @@ void HIGHSCORE::render()
 {
   int width;
 
+  
   glClearColor(0.0f,0.0f,0.0f,0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
-  glPushMatrix();
+  /*glPushMatrix();
   //glTranslatef(x,y,0);
   
   glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -105,47 +123,67 @@ void HIGHSCORE::render()
   glColor4d(1.0,1.0,1.0,1.0);
   for(int index=0;index<(scoreEntries.size()>11?11:scoreEntries.size());index++)
     {
-      setText(scoreEntries.at(index).s1,fontSize);
-      drawText(screen.w/4,y-(30*index),1);
+      for(int lindex=0;lindex<scoreEntries.at(index).s1.length();lindex++)
+	{
+	  glyph->render(scoreEntries.at(index).s1.substr(lindex,1),(screen.w/4)-((glyph->width*scoreEntries.at(index).s1.length()/2))+(glyph->width*lindex),y-(30*index));
+	}
 
-      setText(scoreEntries.at(index).s2,fontSize);
-      drawText(screen.w*3/4,y-(30*index),1);
+      for(int lindex=0;lindex<scoreEntries.at(index).s2.length();lindex++)
+	{
+	  glyph->render(scoreEntries.at(index).s2.substr(lindex,1),(screen.w*3/5)-((glyph->width*scoreEntries.at(index).s2.length()/2))+(glyph->width*lindex),y-(30*index));
+	}
     }
 
-  /*switch(nameToEnter.length())
+  switch(nameToEnter.length())
     {
     case 0:
-      setText("___",fontSize,3);
-      drawText(screen.w/4,y-390,1);
+      text="___";
       break;
     case 1:
-      setText(" __",fontSize,3);
-      drawText(screen.w/4,y-390,1);
+      text=" __";
       break;
     case 2:
-      setText("  _",fontSize,3);
-      drawText(screen.w/4,y-390,1);
-      }*/
-  
-  setText(nameToEnter,fontSize,3);
-  drawText(screen.w/4,y-390,1);
+      text="  _";
+      break;
+    case 3:
+      text="   ";
+      break;
+    }
 
-  setText(intToString(globalScore),fontSize);
-  drawText(screen.w*3/4,y-390,1);
+  for(int lindex=0;lindex<text.length();lindex++)
+    {
+      glyph->render(text.substr(lindex,1),(screen.w/4)-((glyph->width*text.length()/2))+(glyph->width*lindex),y-390);
+    }
+  
+  for(int lindex=0;lindex<nameToEnter.length();lindex++)
+    {
+      glyph->render(nameToEnter.substr(lindex,1),(screen.w/4)-((glyph->width*3/2))+(glyph->width*lindex),y-390);
+    }
+
+  //setText(intToString(globalScore),fontSize);
+  //drawText(screen.w*3/4,y-390,1);
+
+  for(int lindex=0;lindex<intToString(globalScore).length();lindex++)
+    {
+      glyph->render(intToString(globalScore).substr(lindex,1),(screen.w*3/5)-((glyph->width*intToString(globalScore).length()/2))+(glyph->width*lindex),y-390);
+    }
   
   if(enteringName)
     {
-      setText("ENTER INITIALS",fontSize);
-      drawText(screen.w/2,y-430,1);
+      text="ENTER INITIALS";
     }
   else
     {
-      setText("PRESS ENTER TO PLAY AGAIN",fontSize);
-      drawText(screen.w/2,y-430,1);
+      text="PRESS ENTER TO PLAY AGAIN";
     }
 
-  glPopAttrib();
-  glPopMatrix();
+  for(int lindex=0;lindex<text.length();lindex++)
+    {
+      glyph->render(text.substr(lindex,1),(screen.w/2)-((glyph->width*text.length()/2))+(glyph->width*lindex),y-430);
+    }
+
+  //glPopAttrib();
+  //glPopMatrix();
 }
 
 bool HIGHSCORE::logic(int step)
@@ -313,6 +351,9 @@ void HIGHSCORE::setText(string text_a,int size_a,int length_a)
 
   w=start->w;
   h=start->h;
+
+  SDL_FreeSurface(start);
+  SDL_FreeSurface(mid);
 }
 
 void HIGHSCORE::drawText(int x_a,int y_a,bool center)
@@ -359,4 +400,11 @@ SDL_Color HIGHSCORE::color(int r,int g,int b)
 {
   SDL_Color cl={r,g,b};
   return cl;
+}
+
+void HIGHSCORE::clean()
+{
+  //SDL_FreeSurface(start);
+  //SDL_FreeSurface(mid);
+  //TTF_CloseFont(font);
 }
