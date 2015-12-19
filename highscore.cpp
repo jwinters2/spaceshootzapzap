@@ -1,3 +1,7 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -9,8 +13,8 @@
 //#include <freetype2/ft2build.h>
 //#include <FTGL/ftgl.h>
 //#include <FTGL/FTGLPixmapFont.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "person.h"
 #include "object.h"
 #include "world.h"

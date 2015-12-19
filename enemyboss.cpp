@@ -1,4 +1,7 @@
-#define PI 3.1415926535
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -11,6 +14,8 @@
 #include "coord.h"
 #include "globals.h"
 using namespace std;
+
+const double pi=3.14159265358979323;
 
 ENEMYBOSS::ENEMYBOSS(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
@@ -200,7 +205,7 @@ void ENEMYBOSS::stopAndFire()
     {
       for(int index=-7;index<=7;index++)
 	{
-	      new ENEMYBM(*world,x,y,9*cos((direction+90)*PI/180+(0.25*index)),9*sin((direction+90)*PI/180+(0.25*index)));
+	      new ENEMYBM(*world,x,y,9*cos((direction+90)*pi/180+(0.25*index)),9*sin((direction+90)*pi/180+(0.25*index)));
 	}
     }
   if(!((x>radius)&&(x<screen.w-radius)&&(y>radius)&&(y<screen.h-radius)))

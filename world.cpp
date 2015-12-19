@@ -1,11 +1,13 @@
-#define PI 3.14159265358
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <iostream>
 #include <cstdlib> //system("clear")
 #include <vector>
 #include <cmath>
 #include <GL/gl.h>
-#include <GLFW/glfw3.h>
+//#include <GLFW/glfw3.h>
 #include "object.h"
 //#include "graphics.h"
 #include "world.h"
@@ -18,6 +20,8 @@
 #include "enemymissile.h"
 #include "enemyboss.h"
 using namespace std;
+
+const double pi=3.14159265358979323;
 
 WORLD::WORLD()
 {
@@ -92,13 +96,52 @@ void WORLD::render(int frame)
   cout<<"attack frame "<<attackFrame<<endl;
   cout<<"number of entities "<<objects.size()+1<<endl;
 
-  float red=(1+sin(globalFrame*PI/600))/2;
-  float green=(1+sin((2*PI/3)+globalFrame*PI/600))/2;
-  float blue=(1+sin((4*PI/3)+globalFrame*PI/600))/2;
-  float value=(float)globalFrame/12000;
-  if(value>0.25)
+  float red,green,blue;
+  if((globalFrame%1200)<200)//red to yellow
     {
-      value=0.25;
+      red=1;
+      green=(globalFrame%1200)/200.0f;
+      blue=0;
+    }
+  if((globalFrame%1200)>=200 && (globalFrame%1200)<400)//yellow to green
+    {
+      red=1-((globalFrame%1200)-200)/200.0f;
+      green=1;
+      blue=0;
+    }
+  if((globalFrame%1200)>=400 && (globalFrame%1200)<600)//green to cyan
+    {
+      red=0;
+      green=1;
+      blue=((globalFrame%1200)-400)/200.0f;
+    }
+  if((globalFrame%1200)>=600 && (globalFrame%1200)<800)//cyan to blue
+    {
+      red=0;
+      green=1-((globalFrame%1200)-600)/200.0f;
+      blue=1;
+    }
+  if((globalFrame%1200)>=800 && (globalFrame%1200)<1000)//blue to magenta
+    {
+      red=((globalFrame%1200)-800)/200.0f;
+      green=0;
+      blue=1;
+    }
+  if((globalFrame%1200)>=1000)//magenta to red
+    {
+      red=1;
+      green=0;
+      blue=1-((globalFrame%1200)-1000)/200.0f;
+    }
+  /*
+  float red=(1+sin(globalFrame*pi/600))/2;
+  float green=(1+sin((2*pi/3)+globalFrame*pi/600))/2;
+  float blue=(1+sin((4*pi/3)+globalFrame*pi/600))/2;
+  */
+  float value=(float)globalFrame/12000;
+  if(value>0.3)
+    {
+      value=0.3;
     }
 
   glClearColor(value*red,value*green,value*blue,0.0f);
@@ -170,14 +213,14 @@ void WORLD::generateEnemies()
 }
 
 void WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
-{
+{  
   float proportion=10+globalFrame/225;
   if(proportion>80)
     {
       proportion=80;
     }
   int enemy=rand()%100;
-  if(enemy<(proportion*1/16))
+  if(rand()%60==0)
     {
       if(abs(x-screen.w/2)>abs(y-screen.h/2))
 	{
@@ -189,19 +232,35 @@ void WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
 	}
       return;
     }
-  if(enemy<(proportion*6/16))
+  if(enemy<(proportion*1/3))
     {
       new ENEMYACC(world,x,y,xvel,yvel);
       return;
     }
-  if(enemy<(proportion*11/16))
+  if(enemy<(proportion*2/3))
     {
       new ENEMYHOMING(world,x,y,xvel,yvel);
       return;
     }
-  if(enemy<(proportion*16/16))
+  if(enemy<(proportion*3/3))
     {
-      new ENEMYMISSILE(world,rand()%screen.w,rand()%screen.h,0,0);
+      OBJECT* play;
+      for(int index=0;index<objects.size();index++)
+	{
+	  if(objects.at(index)->type.compare("PLAYER")==0)
+	    {
+	      play=objects.at(index);
+	      break;
+	    }
+	}
+      float spawnx,spawny;
+      do
+	{
+	  spawnx=rand()%screen.w;
+	  spawny=rand()%screen.h;
+	}
+      while(sqrt(pow(spawnx-play->x,2)+pow(spawny-play->y,2))<=150);
+	new ENEMYMISSILE(world,spawnx,spawny,0,0);
       return;
     }
   new ENEMYNORMAL(world,x,y,xvel,yvel);

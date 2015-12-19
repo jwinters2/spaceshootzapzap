@@ -1,4 +1,7 @@
-#define PI 3.14159265658
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -10,6 +13,8 @@
 #include "coord.h"
 #include "globals.h"
 using namespace std;
+
+const double pi=3.14159265358979323;
 
 /*ENEMYBM::ENEMYBM(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
@@ -43,7 +48,7 @@ void ENEMYBM::render()
   glColor3f(1.0f,0.3f,0.0f);
   for(int index=0;index<=6;index++)
     {
-      glVertex3f(9*cos((float)index*PI/3),9*sin((float)index*PI/3),0.0f);
+      glVertex3f(9*cos((float)index*pi/3),9*sin((float)index*pi/3),0.0f);
     }
   glEnd();
 

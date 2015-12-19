@@ -1,3 +1,7 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <cmath>
 #include <iostream>
 #include <iomanip>
@@ -6,9 +10,9 @@
 #include <cstring>
 #include <sstream>
 #include <vector>
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 //#include <AL/al.h>
 //#include <AL/alc.h>
 //#include <AL/alut.h>
@@ -42,7 +46,7 @@ Mix_Chunk* hitWAV;
 Mix_Chunk* heatingWAV;
 Mix_Chunk* explosionBigWAV;
 
-SDL_Surface* window;
+SDL_Window* window;
 
 GLYPH glyph_18;
 GLYPH glyph_36;
@@ -51,7 +55,7 @@ GLYPH glyph_60;
 int count;
 //const unsigned char* axes=glfwGetJoystickButtons(GLFW_JOYSTICK_1,&count);
 //const float* dpad=glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count);
-
+const double pi=3.14159265358979323;
 
 void quitGame()
 {

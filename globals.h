@@ -1,10 +1,14 @@
 #pragma once
-#define pi 3.1415926535
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <cstdlib> //atoi
 #include <string>
 #include <vector>
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "glyph.h"
 //#include <AL/al.h>
 //#include <AL/alc.h>
@@ -90,7 +94,7 @@ extern Mix_Chunk* beepbeepbeepWAV;
 extern Mix_Chunk* hitWAV;
 extern Mix_Chunk* heatingWAV;
 extern Mix_Chunk* explosionBigWAV;
-extern SDL_Surface* window;
+extern SDL_Window* window;
 
 extern GLYPH glyph_18;
 extern GLYPH glyph_36;

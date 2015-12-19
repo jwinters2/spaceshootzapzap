@@ -1,12 +1,16 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h> //usleep(250000)
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_ttf.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 //#include <GLFW/glfw3.h>
@@ -31,7 +35,7 @@ using namespace std;
 
 WORLD new_world;
 box WindowSize;
-const Uint8* keystate=SDL_GetKeyState(NULL);
+const Uint8* keystate=SDL_GetKeyboardState(NULL);
 SDL_Joystick* joy;
 SDL_Event event;
 
@@ -49,9 +53,9 @@ int main(int argc, char** argv)
   srand(time(NULL));
 
   SDL_Init(SDL_INIT_EVERYTHING);
-  window=SDL_SetVideoMode(screen.w,screen.h,32,SDL_DOUBLEBUF|SDL_OPENGL);
+  window=SDL_CreateWindow("spaceshootzapzap.exe",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,screen.w,screen.h,SDL_WINDOW_OPENGL);
+  SDL_GLContext glcontext=SDL_GL_CreateContext(window);
   TTF_Init();
-  SDL_WM_SetCaption("space_shoot_zap_zap.exe", NULL );
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
   long timer=0;
 
@@ -168,7 +172,7 @@ int main(int argc, char** argv)
 	      new_world.gamelogic();
 	      new_world.render();
 	    }
-	  SDL_GL_SwapBuffers();
+	  SDL_GL_SwapWindow(window);
 	  glClear(0);
 	  //SDL_Flip(window);
 	  if((SDL_GetTicks()-timer)<1000.0f/60)
@@ -196,13 +200,14 @@ int main(int argc, char** argv)
 	  objects.at(index)->clean();
 	}
     }
+  SDL_GL_DeleteContext(glcontext);
   cout<<"scoreBoard.clean()"<<endl;
   scoreBoard.clean();
   cout<<"pauseText.clean()"<<endl;
   pauseText.clean();
   TTF_Quit();
   //std::cout<<"freeing surface"<<std::endl;
-  SDL_FreeSurface(window);
+  //SDL_FreeSurface(window);
   //std::cout<<"quitting SDL"<<std::endl;
   SDL_Quit();
   return 0;
@@ -222,52 +227,52 @@ void handleKeypress()
   SDL_PumpEvents();
   SDL_JoystickUpdate();
   //cout<<SDL_JoystickOpened(0)<<endl;
-  if(keystate[SDLK_ESCAPE])
+  if(keystate[SDL_SCANCODE_ESCAPE])
     {
       cout<<"escape was pressed"<<endl;
       quitGame();
     }
-  if(keystate[SDLK_RETURN] || SDL_JoystickGetButton(joy,9))
+  if(keystate[SDL_SCANCODE_RETURN] || SDL_JoystickGetButton(joy,9))
     {
       start_menu=0;
     }
-  keys.up   =(keystate[SDLK_UP]    || keystate[SDLK_w] || SDL_JoystickGetAxis(joy,1)<0);
-  keys.down =(keystate[SDLK_DOWN]  || keystate[SDLK_s] || SDL_JoystickGetAxis(joy,1)>0);
-  keys.left =(keystate[SDLK_LEFT]  || keystate[SDLK_a] || SDL_JoystickGetAxis(joy,0)<0);
-  keys.right=(keystate[SDLK_RIGHT] || keystate[SDLK_d] || SDL_JoystickGetAxis(joy,0)>0);
-  keys.enter=keystate[SDLK_RETURN];
-  keys.attack=(keystate[SDLK_SPACE] || SDL_JoystickGetButton(joy,0));
+  keys.up   =(keystate[SDL_SCANCODE_UP]    || keystate[SDL_SCANCODE_W] || SDL_JoystickGetAxis(joy,1)<0);
+  keys.down =(keystate[SDL_SCANCODE_DOWN]  || keystate[SDL_SCANCODE_S] || SDL_JoystickGetAxis(joy,1)>0);
+  keys.left =(keystate[SDL_SCANCODE_LEFT]  || keystate[SDL_SCANCODE_A] || SDL_JoystickGetAxis(joy,0)<0);
+  keys.right=(keystate[SDL_SCANCODE_RIGHT] || keystate[SDL_SCANCODE_D] || SDL_JoystickGetAxis(joy,0)>0);
+  keys.enter=(keystate[SDL_SCANCODE_RETURN]||SDL_JoystickGetButton(joy,9));
+  keys.attack=(keystate[SDL_SCANCODE_SPACE] || SDL_JoystickGetButton(joy,0));
   if(keys.attack && !keys.attack_old)
     {
       attackFrame=globalFrame;
     }
-  keys.a=keystate[SDLK_a];
-  keys.b=keystate[SDLK_b];
-  keys.c=keystate[SDLK_c];
-  keys.d=keystate[SDLK_d];
-  keys.e=keystate[SDLK_e];
-  keys.f=keystate[SDLK_f];
-  keys.g=keystate[SDLK_g];
-  keys.h=keystate[SDLK_h];
-  keys.i=keystate[SDLK_i];
-  keys.j=keystate[SDLK_j];
-  keys.k=keystate[SDLK_k];
-  keys.l=keystate[SDLK_l];
-  keys.m=keystate[SDLK_m];
-  keys.n=keystate[SDLK_n];
-  keys.o=keystate[SDLK_o];
-  keys.p=(keystate[SDLK_p]||((!gameScoreBoard) && SDL_JoystickGetButton(joy,8)));
-  keys.q=keystate[SDLK_q];
-  keys.r=keystate[SDLK_r];
-  keys.s=keystate[SDLK_s];
-  keys.t=keystate[SDLK_t];
-  keys.u=keystate[SDLK_u];
-  keys.v=keystate[SDLK_v];
-  keys.w=keystate[SDLK_w];
-  keys.x=keystate[SDLK_x];
-  keys.y=keystate[SDLK_y];
-  keys.z=keystate[SDLK_z];
-  keys.backspace=keystate[SDLK_BACKSPACE];
+  keys.a=keystate[SDL_SCANCODE_A];
+  keys.b=keystate[SDL_SCANCODE_B];
+  keys.c=keystate[SDL_SCANCODE_C];
+  keys.d=keystate[SDL_SCANCODE_D];
+  keys.e=keystate[SDL_SCANCODE_E];
+  keys.f=keystate[SDL_SCANCODE_F];
+  keys.g=keystate[SDL_SCANCODE_G];
+  keys.h=keystate[SDL_SCANCODE_H];
+  keys.i=keystate[SDL_SCANCODE_I];
+  keys.j=keystate[SDL_SCANCODE_J];
+  keys.k=keystate[SDL_SCANCODE_K];
+  keys.l=keystate[SDL_SCANCODE_L];
+  keys.m=keystate[SDL_SCANCODE_M];
+  keys.n=keystate[SDL_SCANCODE_N];
+  keys.o=keystate[SDL_SCANCODE_O];
+  keys.p=(keystate[SDL_SCANCODE_P]||((!gameScoreBoard) && SDL_JoystickGetButton(joy,8)));
+  keys.q=keystate[SDL_SCANCODE_Q];
+  keys.r=keystate[SDL_SCANCODE_R];
+  keys.s=keystate[SDL_SCANCODE_S];
+  keys.t=keystate[SDL_SCANCODE_T];
+  keys.u=keystate[SDL_SCANCODE_U];
+  keys.v=keystate[SDL_SCANCODE_V];
+  keys.w=keystate[SDL_SCANCODE_W];
+  keys.x=keystate[SDL_SCANCODE_X];
+  keys.y=keystate[SDL_SCANCODE_Y];
+  keys.z=keystate[SDL_SCANCODE_Z];
+  keys.backspace=keystate[SDL_SCANCODE_BACKSPACE];
   if (keys.p&&(!keys.p_old)&&(!gameScoreBoard)&&(!start_menu))
     {
       if(gamePause)

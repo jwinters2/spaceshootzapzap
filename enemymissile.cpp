@@ -1,12 +1,14 @@
-#define PI 3.16159265358979323
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <cmath>
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+//#include <AL/al.h>
+//#include <AL/alc.h>
+//#include <AL/alut.h>
 #include "person.h"
 #include "object.h"
 #include "world.h"
@@ -14,6 +16,8 @@
 #include "coord.h"
 #include "globals.h"
 using namespace std;
+
+const double pi=3.14159265358979323;
 
 ENEMYMISSILE::ENEMYMISSILE(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
@@ -92,7 +96,7 @@ void ENEMYMISSILE::render()
        //glColor4f(1.0f,0.5f,0.0f,(1+cos((float)jndex+countdown*2*PI/15))/3);
        for(int index=0;index<128;index++)
 	 {
-	   glVertex3f(3.0f*((100-countdown)%10)*cos((float)index*PI/63.75),3.0f*((100-countdown)%10)*sin((float)index*PI/63.75),0.0f);
+	   glVertex3f(3.0f*((100-countdown)%10)*cos((float)index*pi/63.5),3.0f*((100-countdown)%10)*sin((float)index*pi/63.5),0.0f);
 	 }
        glEnd();
     }

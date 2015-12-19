@@ -1,9 +1,14 @@
 #pragma once
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <cstring>
 #include <GL/gl.h>
 //#include <FTGL/ftgl.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "glyph.h"
 
 #include "object.h"

@@ -1,10 +1,14 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
 #include <GL/gl.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 //#include <freetype2/freetype/config/ftheader.h>
 //#include <freetype2/ft2build.h>
 //#include <FTGL/ftgl.h>
