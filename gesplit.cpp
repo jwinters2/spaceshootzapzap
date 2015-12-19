@@ -6,7 +6,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <unistd.h> //usleep(250000)
+//#include <unistd.h> //usleep(250000)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_ttf.h>
@@ -32,6 +32,9 @@
 #include "glyph.h"
 //#include "graphics.h"
 using namespace std;
+
+//I blame microsoft for making me need this.
+extern "C" {FILE __iob_func[3]={*stdin,*stdout,*stderr};}
 
 WORLD new_world;
 box WindowSize;

@@ -26,61 +26,65 @@ ENEMYACC::ENEMYACC(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
 
 void ENEMYACC::render()
 {
-  glPushMatrix();
-  glTranslatef(x,y,0);
-  glRotatef(getDir(xvel,yvel)+180,0,0,1);
-  glBegin(GL_TRIANGLES);
-  /*
-  if(exist)
+  for(int index=0;index<posHistory.size();index++)
     {
-      glColor3f(0.5f,0.5f,0.5f);//888888
+      float alpha=(index==0?1.0f:2.0f/(index+4));
+      glPushMatrix();
+      glTranslatef(posHistory.at(index)->x,posHistory.at(index)->y,0);
+      glRotatef(posHistory.at(index)->dir+180,0,0,1);
+      glBegin(GL_TRIANGLES);
+      /*
+	if(exist)
+	{
+	glColor3f(0.5f,0.5f,0.5f);//888888
+	}
+	else
+	{
+	glColor3f(1.0f,0.0f,1.0f);//ff00ff
+	}
+	
+	glVertex3f(0.0f,0.0f,0.0f);
+	glVertex3f(0.0f,0.1f,0.0f);
+	glVertex3f(0.1f,0.1f,0.0f);
+	glVertex3f(0.05f,0.0f,0.0f);
+      */
+      //main body
+      glColor4f(0.0f,1.0f,1.0f,alpha);//00FFFF
+      glVertex3f(-12.0f,0.0f,0.0f);
+      
+      glColor4f(0.0f,1.0f,1.0f,alpha);	
+      glVertex3f(4.0f,0.0f,0.0f);
+      
+      glColor4f(0.0f,0.8f,0.8f,alpha);
+      glVertex3f(012.0f,012.0f,0.0f);
+      
+      
+      glColor4f(0.0f,0.6f,0.6f,alpha);
+      glVertex3f(-12.0f,0.0f,0.0f);
+      
+      glColor4f(0.0f,0.6f,0.6f,alpha);	
+      glVertex3f(4.0f,0.0f,0.0f);
+      
+      glColor4f(0.0f,0.8f,0.8f,alpha);
+      glVertex3f(012.0f,0-12.0f,0.0f);
+      
+      glEnd();
+      glPopMatrix();
+      
+      //OLD CLI RENDER
+      /*
+	cout<<"id: "<<id<<"\t";
+	cout<<"x:"<<x<<"\t";
+	cout<<"y:"<<y<<"\t";
+	cout<<"xvel:"<<xvel<<"\t";
+	cout<<"yvel:"<<yvel<<"\t";
+	if(!exist)
+	{
+	cout<<"DESTROYED";
+	}
+	cout<<endl;
+      */
     }
-  else
-    {
-      glColor3f(1.0f,0.0f,1.0f);//ff00ff
-    }
-  
-  glVertex3f(0.0f,0.0f,0.0f);
-  glVertex3f(0.0f,0.1f,0.0f);
-  glVertex3f(0.1f,0.1f,0.0f);
-  glVertex3f(0.05f,0.0f,0.0f);
-  */
-  //main body
-  glColor3f(0.0f,1.0f,1.0f);//00FFFF
-  glVertex3f(-12.0f,0.0f,0.0f);
-
-  glColor3f(0.0f,1.0f,1.0f);	
-  glVertex3f(4.0f,0.0f,0.0f);
-
-  glColor3f(0.0f,0.8f,0.8f);
-  glVertex3f(012.0f,012.0f,0.0f);
-
-  
-  glColor3f(0.0f,0.6f,0.6f);
-  glVertex3f(-12.0f,0.0f,0.0f);
-
-  glColor3f(0.0f,0.6f,0.6f);	
-  glVertex3f(4.0f,0.0f,0.0f);
-
-  glColor3f(0.0f,0.8f,0.8f);
-  glVertex3f(012.0f,0-12.0f,0.0f);
-  
-  glEnd();
-  glPopMatrix();
-
-  //OLD CLI RENDER
-  /*
-  cout<<"id: "<<id<<"\t";
-  cout<<"x:"<<x<<"\t";
-  cout<<"y:"<<y<<"\t";
-  cout<<"xvel:"<<xvel<<"\t";
-  cout<<"yvel:"<<yvel<<"\t";
-  if(!exist)
-    {
-      cout<<"DESTROYED";
-    }
-  cout<<endl;
-  */
 }
 
 bool ENEMYACC::logic(int step)
@@ -95,10 +99,23 @@ bool ENEMYACC::logic(int step)
 	  xvel+=xacc;
 	  yvel+=yacc;
 	}
+      if(globalFrame%3==0)
+	{
+	  posHistory.insert(posHistory.begin(),new posState(x,y,getDir(xvel,yvel)));
+	}
+      if(posHistory.size()>10)
+	{
+	  delete posHistory.at(10);
+	  posHistory.resize(10);
+	}
       break;
     case 1:
       if(!((x>0)&&(x<screen.w)&&(y>0)&&(y<screen.h))&&dotProduct(xvel,yvel,x-screen.w/2,y+screen.h/2)>0)
 	{
+	  for(int index=0;index<posHistory.size();index++)
+	    {
+	      delete posHistory.at(index);
+	    }
 	  world->deleteobject(id);
 	}
       break;

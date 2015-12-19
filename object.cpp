@@ -5,9 +5,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+//#include <AL/al.h>
+//#include <AL/alc.h>
+//#include <AL/alut.h>
 #include "globals.h"
 #include "object.h"
 #include "person.h"
@@ -27,6 +27,7 @@ OBJECT::OBJECT(WORLD& world_a,float x_a,float y_a,float xvel_a,float yvel_a)
   type="NULL";
   layer=5;
   age=0;
+  posHistory.push_back(new posState(x,y,0));
 }
 
 OBJECT::OBJECT(float x_a,float y_a,float xvel_a,float yvel_a)
@@ -39,6 +40,7 @@ OBJECT::OBJECT(float x_a,float y_a,float xvel_a,float yvel_a)
   type="NULL";
   layer=5;
   age=0;
+  posHistory.push_back(new posState(x,y,0));
 }
 
 void OBJECT::init(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)

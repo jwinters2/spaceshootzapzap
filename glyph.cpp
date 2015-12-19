@@ -77,7 +77,7 @@ void GLYPH::SetSurface(string letter,GLuint &surf)
 
   glGenTextures(1,&surf);
   glBindTexture(GL_TEXTURE_2D,surf);
-  glTexImage2D(GL_TEXTURE_2D,0,4,start->w,start->h,0,GL_BGRA,GL_UNSIGNED_BYTE,mid->pixels);
+  glTexImage2D(GL_TEXTURE_2D,0,4,start->w,start->h,0,GL_RGBA,GL_UNSIGNED_BYTE,mid->pixels);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
