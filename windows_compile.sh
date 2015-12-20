@@ -1,1 +1,0 @@
-/usr/bin/x86_64-w64-mingw32-g++ *.cpp -o game.exe -I /usr/x86_64-w64-mingw32/include -L /usr/x86_64-w64-mingw32/lib -lGL -lglu -lglut -lglfw -lfreetype -lftgl -lopenal -lalut -I/usr/x86_64-w64-mingw32/include/freetype2
