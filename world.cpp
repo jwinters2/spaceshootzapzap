@@ -193,26 +193,38 @@ void WORLD::generateEnemies()
 	  return;
 	}
     }
-  int frequency=15+(30*pow(1.001,(-1*globalFrame/2)));
+  int frequency=20+(40*pow(1.001,(-1*globalFrame/2)));
   cout<<"frequency "<<frequency<<endl;
   if(globalFrame%frequency==0 && globalFrame>60)
     {
       switch(rand()%4)
 	{
 	case 0://from top
-	  randomEnemy(*this,rand()%screen.w,-20,0,6);
+	  if(randomEnemy(*this,rand()%screen.w,-20,0,6))
+	    {
+	      break;
+	    }
 	  //new ENEMYNORMAL(*this,rand()%screen.w,-20,0,12);
 	case 1://from bottom
-	  randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6);
+	  if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6))
+	    {
+	      break;
+	    }
 	case 2://from left
-	  randomEnemy(*this,-20,rand()%screen.h,6,0);
+	  if(randomEnemy(*this,-20,rand()%screen.h,6,0))
+	    {
+	      break;
+	    }
 	case 3://from right
-	  randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0);
+	  if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0))
+	    {
+	      break;
+	    }
 	}
     }
 }
 
-void WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
+bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
 {  
   float proportion=10+globalFrame/225;
   if(proportion>80)
@@ -220,7 +232,7 @@ void WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
       proportion=80;
     }
   int enemy=rand()%100;
-  if(rand()%60==0)
+  if(globalScore%5000>4500)
     {
       if(abs(x-screen.w/2)>abs(y-screen.h/2))
 	{
@@ -230,17 +242,17 @@ void WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
 	{
 	  new ENEMYBOSS(world,screen.w/2,y,xvel/3,yvel/3);
 	}
-      return;
+      return true;
     }
   if(enemy<(proportion*1/3))
     {
       new ENEMYACC(world,x,y,xvel,yvel);
-      return;
+      return false;
     }
   if(enemy<(proportion*2/3))
     {
       new ENEMYHOMING(world,x,y,xvel,yvel);
-      return;
+      return false;
     }
   if(enemy<(proportion*3/3))
     {
@@ -261,7 +273,8 @@ void WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
 	}
       while(sqrt(pow(spawnx-play->x,2)+pow(spawny-play->y,2))<=150);
 	new ENEMYMISSILE(world,spawnx,spawny,0,0);
-      return;
+      return false;
     }
   new ENEMYNORMAL(world,x,y,xvel,yvel);
+  return false;
 }

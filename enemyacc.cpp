@@ -113,7 +113,7 @@ bool ENEMYACC::logic(int step)
 	}
       break;
     case 1:
-      if(!((x>0)&&(x<screen.w)&&(y>0)&&(y<screen.h))&&dotProduct(xvel,yvel,x-screen.w/2,y+screen.h/2)>0)
+      if(!((x>0)&&(x<screen.w)&&(y>0)&&(y<screen.h))&&dotProduct(xvel,yvel,x-screen.w/2,y-screen.h/2)>0)
 	{
 	  for(int index=0;index<posHistory.size();index++)
 	    {

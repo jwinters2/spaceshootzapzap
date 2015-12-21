@@ -31,5 +31,5 @@ public:
   void render(int=0);
   void gamelogic();
   void generateEnemies();
-  void randomEnemy(WORLD&,int=0,int=0,int=0,int=0);
+  bool randomEnemy(WORLD&,int=0,int=0,int=0,int=0);
 };

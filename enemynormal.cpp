@@ -109,7 +109,7 @@ bool ENEMYNORMAL::logic(int step)
       //posHistory.at(0)->y=y;
       break;
     case 1:
-      if(!((x>0)&&(x<screen.w)&&(y>0)&&(y<screen.h))&&dotProduct(xvel,yvel,x-screen.w/2,y+screen.h/2)>0)
+      if(!((x>0)&&(x<screen.w)&&(y>0)&&(y<screen.h))&&dotProduct(xvel,yvel,x-screen.w/2,y-screen.h/2)>0)
 	{
 	  world->deleteobject(id);
 	}
