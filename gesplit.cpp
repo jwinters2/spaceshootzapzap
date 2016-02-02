@@ -182,7 +182,9 @@ int main(int argc, char** argv)
 	    {
 	      SDL_Delay((1000.0f/60)-(SDL_GetTicks()-timer));
 	    }
-	  cout<<1000/(SDL_GetTicks()-timer)<<" fps"<<endl;
+	  //cout<<1000/(SDL_GetTicks()-timer)<<" fps"<<endl;
+	  fps=1000.0f/(SDL_GetTicks()-timer);
+	  cout<<"fps: "<<fps<<endl;
 	  timer=SDL_GetTicks();
 	}
     }

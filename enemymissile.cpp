@@ -26,7 +26,7 @@ ENEMYMISSILE::ENEMYMISSILE(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   radius=12;
   health=1;
   Mix_PlayChannel(beepbeepbeepSound.channel,beepbeepbeepSound.sound,3);
-  countdown=60;
+  countdown=fps;
   hostile=0;
 }
 
@@ -53,7 +53,12 @@ void ENEMYMISSILE::render()
     {
       for(int index=0;index<posHistory.size();index++)
 	{
-	  if(index%4==0)
+          int freq=fps/15;
+	  if(freq<=0)
+            {
+              freq=1;
+            }
+          if(index%freq==0 && index<=0.6666*fps)
 	    {
 	      float alpha=(index==0?1.0f:2.0f/(index+4));
 	      glPushMatrix();
@@ -68,7 +73,7 @@ void ENEMYMISSILE::render()
 	      glVertex3f(4.0f,0.0f,0.0f);
 	      
 	      glColor4f(0.8f,0.4f,0.0f,alpha);//DUNNO
-	      glVertex3f(12.0f,08.0f,0.0f);
+	      glVertex3f(12.0f,8.0f,0.0f);
 	      
 	      
 	      glColor4f(0.6f,0.3f,0.0f,alpha);//FF00FF
@@ -163,8 +168,8 @@ bool ENEMYMISSILE::logic(int step)
 	}
       else
 	{
-	  x+=xvel;
-	  y+=yvel;
+	  x+=xvel*(60.0f/fps);
+	  y+=yvel*(60.0f/fps);
 
 	  if(countdown==0)
 	    {

@@ -15,6 +15,8 @@ class PLAYER: public OBJECT{
  public:
   PLAYER(WORLD&,int=0,int=0,int=0,int=0);
   int maxspeed;
+  int bulletTimer;
+	float scoreFpsTimer;
   void render();
   void checkCollisions();
   bool logic(int);

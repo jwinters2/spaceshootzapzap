@@ -27,9 +27,14 @@ void ENEMYNORMAL::render()
 {
   for(int index=0;index<posHistory.size();index++)
     {
-      if(index%4==0)
-	{
-	  float alpha=(index==0?1.0f:2.0f/(index+4));
+      int freq=fps/15;
+      if(freq<=0)
+        {
+          freq=1;
+        }
+      if(index%freq==0 && index<=0.6666*fps)
+     	{
+	  float alpha=(index==0?1.0f:(float)freq/((2*index)+4));
 	  //cout<<"r"<<index<<" "<<alpha<<";";
 	  glPushMatrix();
 	  glTranslatef(posHistory.at(index)->x,posHistory.at(index)->y,0);
@@ -95,8 +100,8 @@ bool ENEMYNORMAL::logic(int step)
   switch(step)
     {
     case 0:
-      x+=xvel;
-      y+=yvel;
+      x+=xvel*(60.0f/fps);
+      y+=yvel*(60.0f/fps);
       
       posHistory.insert(posHistory.begin(),new posState(x,y,getDir(xvel,yvel)));
       

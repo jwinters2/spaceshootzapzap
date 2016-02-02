@@ -1,1 +1,1 @@
-cat blank.txt > scoreboard.txt
+cp blank.txt scoreboard.txt

@@ -21,6 +21,8 @@ PLAYER::PLAYER(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   type="PLAYER";
   maxspeed=7;
   hostile=0;
+  bulletTimer=0;
+	scoreFpsTimer=fps;
 }
 
 void PLAYER::render()
@@ -101,19 +103,19 @@ bool PLAYER::logic(int step)
 	{
 	  if(keys.up)
 	    {
-	      yvel+=0.8;//1.5;
+	      yvel+=0.8*(60.0f/fps);//1.5;
 	    }
 	  if(keys.down)
 	    {
-	      yvel-=0.8;//1.5;
+	      yvel-=0.8*(60.0f/fps);//1.5;
 	    }
 	  if(keys.left)
 	    {
-	      xvel-=0.8;//1.5;
+	      xvel-=0.8*(60.0f/fps);//1.5;
 	    }
 	  if(keys.right)
 	    {
-	      xvel+=0.8;//1.5;
+	      xvel+=0.8*(60.0f/fps);//1.5;
 	    }
 	  if((xvel*xvel)+(yvel*yvel)>maxspeed*maxspeed)
 	    {
@@ -121,16 +123,16 @@ bool PLAYER::logic(int step)
 	      yvel*=maxspeed/sqrt((xvel*xvel)+(yvel*yvel));
 	    }
 	  //move, and stay in frame
-	  x+=xvel;
-	  y+=yvel;
+	  x+=xvel*(60.0f/fps);
+	  y+=yvel*(60.0f/fps);
 	  if((x<0)||(x>screen.w))
 	    {
-	      x-=xvel;
+	      x-=xvel*(60.0f/fps);
 	      xvel=0;
 	    }
 	  if((y<0)||(y>screen.h))
 	    {
-	      y-=yvel;
+	      y-=yvel*(60.0f/fps);
 	      yvel=0;
 	    }
 
@@ -139,7 +141,7 @@ bool PLAYER::logic(int step)
 	    {
 	      if(xvel!=0)
 		{
-		  xvel*=(sqrt((xvel*xvel)+(yvel*yvel))-1)/sqrt((xvel*xvel)+(yvel*yvel));
+		  xvel*=(sqrt((xvel*xvel)+(yvel*yvel))-60.0f/fps)/sqrt((xvel*xvel)+(yvel*yvel));
 		  if(abs(xvel)<1)
 		    {
 		      xvel=0;
@@ -147,7 +149,7 @@ bool PLAYER::logic(int step)
 		}
 	      if(yvel!=0)
 		{
-		  yvel*=(sqrt((xvel*xvel)+(yvel*yvel))-1)/sqrt((xvel*xvel)+(yvel*yvel));
+		  yvel*=(sqrt((xvel*xvel)+(yvel*yvel))-60.0f/fps)/sqrt((xvel*xvel)+(yvel*yvel));
 		  if(abs(yvel)<1)
 		    {
 		      yvel=0;
@@ -164,10 +166,18 @@ bool PLAYER::logic(int step)
       checkCollisions();
       break;
     case 2:
-      if(globalFrame%12==0 && globalFrame!=0)
-	{
-	  globalScore+=10;
-	}
+      if(bulletTimer>0)
+			{
+				bulletTimer--;
+			}
+
+      if(scoreFpsTimer<=0 && globalFrame>5)
+			{
+				globalScore+=10;
+				scoreFpsTimer=fps/2;
+			}
+			scoreFpsTimer--;
+
       break;
     default:
       return true;
@@ -191,12 +201,13 @@ void PLAYER::checkCollisions()
 
 void PLAYER::shootBullets()
 {
-  if((globalFrame-attackFrame)%12==0)
+  if(bulletTimer==0)
     {
       new BULLET(*world,x,y,0,12);
       new BULLET(*world,x,y,0,-12);
       new BULLET(*world,x,y,12,0);
       new BULLET(*world,x,y,-12,0);
       Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
+      bulletTimer=fps/5;
     }
 }

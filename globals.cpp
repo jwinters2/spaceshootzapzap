@@ -37,6 +37,7 @@ bool quit=0;
 bool start_menu=1;
 bool gamePause=0;
 bool gameScoreBoard=0;
+float fps=0;
 
 Mix_Music* music;
 /*

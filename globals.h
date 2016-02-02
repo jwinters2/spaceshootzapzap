@@ -91,6 +91,7 @@ extern bool start_menu;
 extern bool gamePause;
 extern bool gameScoreBoard;
 extern int count;
+extern float fps;
 extern const unsigned char* axes;
 extern const float* dpad;
 extern Mix_Music* music;

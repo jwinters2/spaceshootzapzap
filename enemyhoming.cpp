@@ -27,7 +27,12 @@ void ENEMYHOMING::render()
 {
   for(int index=0;index<posHistory.size();index++)
     {
-      if(index%4==0)
+      int freq=fps/15;
+      if(freq<=0)
+        {
+          freq=1;
+        }
+      if(index%freq==0 && index<=0.6666*fps)
 	{
 	  float alpha=(index==0?1.0f:2.0f/(index+4));
 	  glPushMatrix();
@@ -106,10 +111,10 @@ bool ENEMYHOMING::logic(int step)
   switch(step)
     {
     case 0:
-      x+=xvel;
-      y+=yvel;
-      xvel-=0.4*(xtarget/sqrt(pow(xtarget,2)+pow(ytarget,2)));
-      yvel-=0.4*(ytarget/sqrt(pow(xtarget,2)+pow(ytarget,2)));
+      x+=xvel*(60.0f/fps);
+      y+=yvel*(60.0f/fps);
+      xvel-=(60.0f/fps)*0.4*(xtarget/sqrt(pow(xtarget,2)+pow(ytarget,2)));
+      yvel-=(60.0f/fps)*0.4*(ytarget/sqrt(pow(xtarget,2)+pow(ytarget,2)));
       xvel*=speed/sqrt(pow(xvel,2)+pow(yvel,2));
       yvel*=speed/sqrt(pow(xvel,2)+pow(yvel,2));
       

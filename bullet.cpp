@@ -28,13 +28,13 @@ void BULLET::render()
   glBegin(GL_TRIANGLE_FAN);
   /*
   if(exist)
-    {
-      glColor3f(0.5f,0.5f,0.5f);//888888
-    }
+	{
+		glColor3f(0.5f,0.5f,0.5f);//888888
+	}
   else
-    {
-      glColor3f(1.0f,0.0f,1.0f);//ff00ff
-    }
+	{
+		glColor3f(1.0f,0.0f,1.0f);//ff00ff
+	}
   
   glVertex3f(0.0f,0.0f,0.0f);
   glVertex3f(0.0f,0.1f,0.0f);
@@ -72,9 +72,9 @@ void BULLET::render()
   cout<<"xvel:"<<xvel<<"\t";
   cout<<"yvel:"<<yvel<<"\t";
   if(!exist)
-    {
-      cout<<"DESTROYED";
-    }
+	{
+		cout<<"DESTROYED";
+	}
   cout<<endl;
   */
 }
@@ -82,16 +82,16 @@ void BULLET::render()
 bool BULLET::logic(int step)
 {
   switch(step)
-    {
+	{
     case 0:
-      x+=xvel;
-      y+=yvel;
+      x+=xvel*(60.0f/fps);
+      y+=yvel*(60.0f/fps);
       break;
     case 1:
       if(!((x>0)&&(x<screen.w)&&(y>0)&&(y<screen.h))&&dotProduct(xvel,yvel,x-screen.w/2,y+screen.h/2)>0)
-	{
-	  world->deleteobject(id);
-	}
+			{
+				world->deleteobject(id);
+			}
       break;
     case 2:
       checkCollision();
@@ -99,28 +99,28 @@ bool BULLET::logic(int step)
     default:
       return true;
       break;
-    }
+	}
   return false;
 }
 
 void BULLET::checkCollision()
 {
   for(int index=0;index<world->objects.size();index++)
-    {
-      if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,(2*world->objects.at(index)->radius)-10)&&world->objects.at(index)->hostile&&world->objects.at(index)->type.compare("ENEMYBM")!=0)
 	{
-	  world->objects.at(index)->health--;
-	  if(world->objects.at(index)->health==0)
-	    {
-	      world->objects.at(index)->addToScore();
-	      //world->deleteobject(world->objects.at(index)->id);
-	      world->objects.at(index)->die();
-	    }
-	  else
-	    {
-	      Mix_PlayChannel(hitSound.channel,hitSound.sound,0);
-	    }
-	  world->deleteobject(id);
+		if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,(2*world->objects.at(index)->radius)-10)&&world->objects.at(index)->hostile&&world->objects.at(index)->type.compare("ENEMYBM")!=0)
+		{
+			world->objects.at(index)->health--;
+			if(world->objects.at(index)->health==0)
+			{
+				world->objects.at(index)->addToScore();
+				//world->deleteobject(world->objects.at(index)->id);
+				world->objects.at(index)->die();
+			}
+			else
+			{
+				Mix_PlayChannel(hitSound.channel,hitSound.sound,0);
+			}
+			world->deleteobject(id);
+		}
 	}
-    }
 }

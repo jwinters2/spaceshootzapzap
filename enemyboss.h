@@ -15,6 +15,7 @@ class ENEMYBOSS: public OBJECT{
  private:
   bool dead;
   float yvelstart,xvelstart,xstart,ystart,direction;
+  float bornFps;
  public:
   ENEMYBOSS(WORLD&,int=0,int=0,int=0,int=0);
   void render();

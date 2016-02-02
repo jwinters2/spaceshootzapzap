@@ -1,0 +1,8 @@
+- powerups
+  - destroy everything
+  - firerate boost
+  - invincibility
+
+- resizability (for phones)
+
+- fullscreen
