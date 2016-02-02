@@ -19,6 +19,7 @@
 #include "enemyhoming.h"
 #include "enemymissile.h"
 #include "enemyboss.h"
+#include "puinvuln.h"
 using namespace std;
 
 const double pi=3.14159265358979323;
@@ -206,25 +207,25 @@ void WORLD::generateEnemies()
 	{
 	case 0://from top
 	  if(randomEnemy(*this,rand()%screen.w,-20,0,6))
-            {
-            break;
-            }
+    {
+      break;
+    }
 	  //new ENEMYNORMAL(*this,rand()%screen.w,-20,0,12);
 	case 1://from bottom
 	  if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6))
-            {
-            break;
-            }
+    {
+      break;
+    }
 	case 2://from left
 	  if(randomEnemy(*this,-20,rand()%screen.h,6,0))
-            {
-            break;
-            }
+    {
+      break;
+    }
 	case 3://from right
 	  if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0))
-            {
-            break;
-            }
+    {
+      break;
+    }
 	}
     }
 }
@@ -237,6 +238,11 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
       proportion=80;
     }
   int enemy=rand()%100;
+  if(rand()%100==0)
+  {
+    new PUINVULN(world,x,y,xvel/3,yvel/3);
+    return false;
+  }
   if((globalScore+1000)%5000>4500)
   {
     if(abs(x-screen.w/2)>abs(y-screen.h/2))
