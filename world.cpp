@@ -20,6 +20,7 @@
 #include "enemymissile.h"
 #include "enemyboss.h"
 #include "puinvuln.h"
+#include "pushoot.h"
 using namespace std;
 
 const double pi=3.14159265358979323;
@@ -193,41 +194,41 @@ void WORLD::deleteobject(int idToDelete)
 void WORLD::generateEnemies()
 {
   for(int index=0;index<objects.size();index++)
+  {
+    if(objects.at(index)->type.compare("BOSS")==0)
     {
-      if(objects.at(index)->type.compare("BOSS")==0)
-	{
-	  return;
-	}
+      return;
     }
+  }
   int frequency=15+(30*pow(1.001,(-1*globalFrame/2)));
   cout<<"frequency "<<frequency<<endl;
   if(globalFrame%frequency==0 && globalFrame>60)
+  {
+    switch(rand()%4)
     {
-      switch(rand()%4)
-	{
-	case 0://from top
-	  if(randomEnemy(*this,rand()%screen.w,-20,0,6))
-    {
-      break;
+      case 0://from top
+        if(randomEnemy(*this,rand()%screen.w,-20,0,6))
+        {
+          break;
+        }
+        //new ENEMYNORMAL(*this,rand()%screen.w,-20,0,12);
+      case 1://from bottom
+        if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6))
+        {
+          break;
+        }
+      case 2://from left
+        if(randomEnemy(*this,-20,rand()%screen.h,6,0))
+        {
+          break;
+        }
+      case 3://from right
+        if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0))
+        {
+          break;
+        }
     }
-	  //new ENEMYNORMAL(*this,rand()%screen.w,-20,0,12);
-	case 1://from bottom
-	  if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6))
-    {
-      break;
-    }
-	case 2://from left
-	  if(randomEnemy(*this,-20,rand()%screen.h,6,0))
-    {
-      break;
-    }
-	case 3://from right
-	  if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0))
-    {
-      break;
-    }
-	}
-    }
+  }
 }
 
 bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
@@ -238,10 +239,15 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
       proportion=80;
     }
   int enemy=rand()%100;
-  if(rand()%100==0)
+  int purand=rand()%30;//300;
+  switch(purand)
   {
-    new PUINVULN(world,x,y,xvel/3,yvel/3);
-    return false;
+    case 0:
+      new PUINVULN(world,x,y,xvel/3,yvel/3);
+      return false;
+    case 1:
+      new PUSHOOT(world,x,y,xvel/3,yvel/3);
+      return false;
   }
   if((globalScore+1000)%5000>4500)
   {
@@ -256,36 +262,36 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
     return true;
   }
   if(enemy<(proportion*1/3))
-    {
-      new ENEMYACC(world,x,y,xvel,yvel);
-      return false;
-    }
+  {
+    new ENEMYACC(world,x,y,xvel,yvel);
+    return false;
+  }
   if(enemy<(proportion*2/3))
-    {
-      new ENEMYHOMING(world,x,y,xvel,yvel);
-      return false;
-    }
+  {
+    new ENEMYHOMING(world,x,y,xvel,yvel);
+    return false;
+  }
   if(enemy<(proportion*3/3))
+  {
+    OBJECT* play=NULL;
+    for(int index=0;index<objects.size();index++)
     {
-      OBJECT* play=NULL;
-      for(int index=0;index<objects.size();index++)
-	{
-	  if(objects.at(index)->type.compare("PLAYER")==0)
-	    {
-	      play=objects.at(index);
-	      break;
-	    }
-	}
-      float spawnx,spawny;
-      do
-	{
-	  spawnx=rand()%screen.w;
-	  spawny=rand()%screen.h;
-	}
-      while(sqrt(pow(spawnx-play->x,2)+pow(spawny-play->y,2))<=150);
-	new ENEMYMISSILE(world,spawnx,spawny,0,0);
-      return false;
+      if(objects.at(index)->type.compare("PLAYER")==0)
+      {
+        play=objects.at(index);
+        break;
+      }
     }
+    float spawnx,spawny;
+    do
+    {
+      spawnx=rand()%screen.w;
+      spawny=rand()%screen.h;
+    }
+    while(sqrt(pow(spawnx-play->x,2)+pow(spawny-play->y,2))<=150);
+    new ENEMYMISSILE(world,spawnx,spawny,0,0);
+    return false;
+  }
   new ENEMYNORMAL(world,x,y,xvel,yvel);
   return false;
 }

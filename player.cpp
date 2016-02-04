@@ -15,6 +15,8 @@
 #include "bullet.h"
 using namespace std;
 
+const double pi=3.14159265358979323;
+
 PLAYER::PLAYER(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
 {
@@ -22,6 +24,9 @@ PLAYER::PLAYER(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   maxspeed=7;
   hostile=0;
   bulletTimer=0;
+  radius=12;
+  invincibleTimer=0;
+  fireboostTimer=0;
 	scoreFpsTimer=fps;
 }
 
@@ -47,17 +52,37 @@ void PLAYER::render()
   glVertex3f(0.05f,0.0f,0.0f);
   */
   //main body
-  glColor3f(0.6f,0.6f,0.6f);//999999
-  glVertex3f(-12.0f,-12.0f,0.0f);
+  if(invincibleTimer>0)
+  {
+    //INVINCIBLY PURPLE
+    glColor3f(1.0f,0.6f,1.0f);//999999
+    glVertex3f(-12.0f,-12.0f,0.0f);
 
-  glColor3f(0.5f,0.5f,0.5f);//888888	
-  glVertex3f(-12.0f,012.0f,0.0f);
+    glColor3f(0.8f,0.0f,0.8f);//888888	
+    glVertex3f(-12.0f,012.0f,0.0f);
 
-  glColor3f(0.6f,0.6f,0.6f);//999999
-  glVertex3f(012.0f,012.0f,0.0f);
+    glColor3f(1.0f,0.6f,1.0f);//999999
+    glVertex3f(012.0f,012.0f,0.0f);
 
-  glColor3f(0.5f,0.5f,0.5f);//888888
-  glVertex3f(012.0f,-12.0f,0.0f);
+    glColor3f(0.8f,0.0f,0.8f);//888888	
+    glVertex3f(012.0f,-12.0f,0.0f);
+  }
+  else
+  {
+    glColor3f(0.6f,0.6f,0.6f);//999999
+    glVertex3f(-12.0f,-12.0f,0.0f);
+
+    glColor3f(0.5f,0.5f,0.5f);//888888	
+    glVertex3f(-12.0f,012.0f,0.0f);
+
+    glColor3f(0.6f,0.6f,0.6f);//999999
+    glVertex3f(012.0f,012.0f,0.0f);
+
+    glColor3f(0.5f,0.5f,0.5f);//888888
+    glVertex3f(012.0f,-12.0f,0.0f);
+  }
+
+
   glEnd();
 
   //spikes
@@ -171,6 +196,16 @@ bool PLAYER::logic(int step)
 				bulletTimer--;
 			}
 
+      if(invincibleTimer>0)
+      {
+        invincibleTimer-=(60.0f/fps);
+      }
+      
+      if(fireboostTimer>0)
+      {
+        fireboostTimer-=(60.0f/fps);
+      }
+
       if(scoreFpsTimer<=0 && globalFrame>5)
 			{
 				globalScore+=10;
@@ -189,25 +224,76 @@ bool PLAYER::logic(int step)
 void PLAYER::checkCollisions()
 {
   for(int index=0;index<world->objects.size();index++)
+  {
+    if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+(2*world->objects.at(index)->radius))&&world->objects.at(index)->hostile&& !(keys.y && keys.i))
     {
-      if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+(2*world->objects.at(index)->radius))&&world->objects.at(index)->hostile&& !(keys.y && keys.i))
-	{
-	  cout<<"Collision, game over"<<endl;
-	  //quitGame();
-	  gameScoreBoard=1;
-	}
+      if(invincibleTimer>0)
+      {
+				world->objects.at(index)->addToScore();
+				world->objects.at(index)->die();
+      }
+      else
+      {
+        cout<<"Collision, game over"<<endl;
+        //quitGame();
+        gameScoreBoard=1;
+      }
     }
+    if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+radius)&&world->objects.at(index)->type.compare("PUINVULN")==0)
+    {
+      invincibleTimer=180;
+      world->deleteobject(world->objects.at(index)->id);
+    }
+    if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+radius)&&world->objects.at(index)->type.compare("PUSHOOT")==0)
+    {
+      fireboostTimer=180;
+      world->deleteobject(world->objects.at(index)->id);
+    }
+
+  }
 }
 
 void PLAYER::shootBullets()
 {
-  if(bulletTimer==0)
+  if(fireboostTimer>0)
+  {
+    /*
+    new BULLET(*world,x,y,-3,11.619);
+    new BULLET(*world,x,y,0,11.619);
+    new BULLET(*world,x,y,30,11.619);
+
+    new BULLET(*world,x,y,-3,-11.619);
+    new BULLET(*world,x,y,0,-11.619);
+    new BULLET(*world,x,y,3,-11.619);
+    
+    new BULLET(*world,x,y,11.619,-3);
+    new BULLET(*world,x,y,11.619,0);
+    new BULLET(*world,x,y,11.619,3);
+
+    new BULLET(*world,x,y,-11.619,-3);
+    new BULLET(*world,x,y,-11.619,0);
+    new BULLET(*world,x,y,-11.619,3);
+    */
+
+    for(int index=0;index<4;index++)
     {
-      new BULLET(*world,x,y,0,12);
-      new BULLET(*world,x,y,0,-12);
-      new BULLET(*world,x,y,12,0);
-      new BULLET(*world,x,y,-12,0);
-      Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
-      bulletTimer=fps/5;
+      new BULLET(*world,x,y,12.0*cos(index*pi/2),12.0*sin(index*pi/2));
+      new BULLET(*world,x,y,12.0*cos(index*pi/2+(fireboostTimer*pi/180)),12.0*sin(index*pi/2+(fireboostTimer*pi/180)));
+      new BULLET(*world,x,y,12.0*cos(index*pi/2-(fireboostTimer*pi/180)),12.0*sin(index*pi/2-(fireboostTimer*pi/180)));
     }
+    Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
+    bulletTimer=fps/10;
+  }
+  else
+  {
+    if(bulletTimer==0)
+      {
+        for(int index=0;index<4;index++)
+        {
+          new BULLET(*world,x,y,12.0*cos(index*pi/2),12.0*sin(index*pi/2));
+        }
+        Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
+        bulletTimer=fps/5;
+      }
+  }
 }
