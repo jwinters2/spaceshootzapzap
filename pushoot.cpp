@@ -9,22 +9,22 @@
 #include "person.h"
 #include "object.h"
 #include "world.h"
-#include "puinvuln.h"
+#include "pushoot.h"
 #include "explosion.h"
 #include "coord.h"
 #include "globals.h"
 using namespace std;
 
-PUINVULN::PUINVULN(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
+PUSHOOT::PUSHOOT(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
 {
   radius=9;
   health=1;
   hostile=0;
-  type="PUINVULN";
+  type="PUSHOOT";
 }
 
-void PUINVULN::render()
+void PUSHOOT::render()
 {
   for(int index=0;index<posHistory.size();index++)
     {
@@ -42,43 +42,43 @@ void PUINVULN::render()
 	  glRotatef(posHistory.at(index)->dir+90,0,0,1);
 	  glBegin(GL_TRIANGLES);
 	  	  //main body
-	  glColor4f(0.8f,0.0f,0.8f,alpha);//FF00FF
+	  glColor4f(0.0f,0.8f,0.0f,alpha);//FF00FF
 	  glVertex3f(-4.0f,4.0f,0.0f);
 
-    glColor4f(1.0f,0.0f,1.0f,alpha);
+    glColor4f(0.0f,1.0f,0.0f,alpha);
     glVertex3f(0.0f,8.0f,0.0f);
 
-    glColor4f(0.8f,0.0f,0.8f,alpha);//FF00FF
+	  glColor4f(0.0f,0.8f,0.0f,alpha);//FF00FF
 	  glVertex3f(4.0f,4.0f,0.0f);
 	
   
-    glColor4f(1.0f,0.2f,1.0f,alpha);//FF00FF
+    glColor4f(0.2f,1.0f,0.2f,alpha);//FF00FF
 	  glVertex3f(-4.0f,4.0f,0.0f);
 
-    glColor4f(0.8f,0.0f,0.8f,alpha);
+    glColor4f(0.0f,0.8f,0.0f,alpha);
     glVertex3f(-4.0f,-4.0f,0.0f);
 
-    glColor4f(1.0f,0.2f,1.0f,alpha);//FF00FF
+    glColor4f(0.2f,1.0f,0.2f,alpha);//FF00FF
 	  glVertex3f(4.0f,4.0f,0.0f);
     
     
-    glColor4f(0.8f,0.0f,0.8f,alpha);
+    glColor4f(0.0f,0.8f,0.0f,alpha);
     glVertex3f(-4.0f,-4.0f,0.0f);
 
-    glColor4f(1.0f,0.2f,1.0f,alpha);//FF00FF
+    glColor4f(0.2f,1.0f,0.2f,alpha);//FF00FF
 	  glVertex3f(4.0f,4.0f,0.0f);
 
-    glColor4f(0.8f,0.0f,0.8f,alpha);
+    glColor4f(0.0f,0.8f,0.0f,alpha);
     glVertex3f(4.0f,-4.0f,0.0f);
 
 
-    glColor4f(1.0f,0.2f,1.0f,alpha);//FF00FF
+    glColor4f(0.2f,1.0f,0.2f,alpha);//FF00FF
 	  glVertex3f(-4.0f,-4.0f,0.0f);
 
-    glColor4f(1.0f,0.0f,1.0f,alpha);
+    glColor4f(0.0f,1.0f,0.0f,alpha);
     glVertex3f(0.0f,-8.0f,0.0f);
 
-    glColor4f(1.0f,0.2f,1.0f,alpha);//FF00FF
+    glColor4f(0.2f,1.0f,0.2f,alpha);//FF00FF
 	  glVertex3f(4.0f,-4.0f,0.0f);
 
   
@@ -102,7 +102,7 @@ void PUINVULN::render()
     }
 }
 
-bool PUINVULN::logic(int step)
+bool PUSHOOT::logic(int step)
 {
   switch(step)
     {
@@ -133,6 +133,6 @@ bool PUINVULN::logic(int step)
   return false;
 }
 
-void PUINVULN::addToScore()
+void PUSHOOT::addToScore()
 {
 }
