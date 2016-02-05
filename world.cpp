@@ -241,7 +241,7 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
       proportion=80;
     }
   int enemy=rand()%100;
-  int purand=rand()%30;//300;
+  int purand=rand()%300;
   switch(purand)
   {
     case 0:

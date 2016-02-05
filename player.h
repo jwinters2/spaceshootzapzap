@@ -17,7 +17,7 @@ class PLAYER: public OBJECT{
   int maxspeed;
   float invincibleTimer;
   float fireboostTimer;
-  int bulletTimer;
+  float bulletTimer;
 	float scoreFpsTimer;
   void render();
   void checkCollisions();

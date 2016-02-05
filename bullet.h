@@ -13,7 +13,7 @@ using namespace std;
 
 class BULLET: public OBJECT{
  public:
-  BULLET(WORLD&,int=0,int=0,int=0,int=0);
+  BULLET(WORLD&,float=0,float=0,float=0,float=0);
   void render();
   bool logic(int);
   void checkCollision();

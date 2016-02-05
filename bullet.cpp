@@ -14,7 +14,7 @@
 #include "globals.h"
 using namespace std;
 
-BULLET::BULLET(WORLD& world_a,int x_a,int y_a,int xvel_a,int yvel_a)
+BULLET::BULLET(WORLD& world_a,float x_a,float y_a,float xvel_a,float yvel_a)
   :OBJECT(world_a,x_a,y_a,xvel_a,yvel_a)
 {
   hostile=0;

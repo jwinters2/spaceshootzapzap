@@ -164,29 +164,29 @@ bool PLAYER::logic(int step)
 
 	  //slow down if no keys are pressed
 	  if(!(keys.up||keys.down||keys.left||keys.right))
-	    {
-	      if(xvel!=0)
 		{
-		  xvel*=(sqrt((xvel*xvel)+(yvel*yvel))-60.0f/fps)/sqrt((xvel*xvel)+(yvel*yvel));
-		  if(abs(xvel)<1)
-		    {
-		      xvel=0;
-		    }
+			if(xvel!=0)
+			{
+				xvel*=(sqrt((xvel*xvel)+(yvel*yvel))-60.0f/fps)/sqrt((xvel*xvel)+(yvel*yvel));
+				if(abs(xvel)<1)
+				{
+					xvel=0;
+				}
+			}
+			if(yvel!=0)
+			{
+				yvel*=(sqrt((xvel*xvel)+(yvel*yvel))-60.0f/fps)/sqrt((xvel*xvel)+(yvel*yvel));
+				if(abs(yvel)<1)
+				{
+					yvel=0;
+				}
+			}
 		}
-	      if(yvel!=0)
-		{
-		  yvel*=(sqrt((xvel*xvel)+(yvel*yvel))-60.0f/fps)/sqrt((xvel*xvel)+(yvel*yvel));
-		  if(abs(yvel)<1)
-		    {
-		      yvel=0;
-		    }
-		}
-	    }
 	}
       if(keys.attack)
-	{
-	  shootBullets();
-	}
+			{
+				shootBullets();
+			}
       break;
     case 1:
       checkCollisions();
@@ -258,7 +258,10 @@ void PLAYER::checkCollisions()
 			{
 				if(world->objects.at(jndex)->hostile)
 				{
-					world->deleteobject(world->objects.at(jndex)->id);
+					if(jndex<world->objects.size())
+					{
+						world->deleteobject(world->objects.at(jndex)->id);
+					}
 					jndex--;//vector compresses, this is to avoid skipping objects
 				}
 			}
@@ -271,45 +274,46 @@ void PLAYER::checkCollisions()
 
 void PLAYER::shootBullets()
 {
-  if(fireboostTimer>0)
-  {
-    /*
-    new BULLET(*world,x,y,-3,11.619);
-    new BULLET(*world,x,y,0,11.619);
-    new BULLET(*world,x,y,30,11.619);
 
-    new BULLET(*world,x,y,-3,-11.619);
-    new BULLET(*world,x,y,0,-11.619);
-    new BULLET(*world,x,y,3,-11.619);
-    
-    new BULLET(*world,x,y,11.619,-3);
-    new BULLET(*world,x,y,11.619,0);
-    new BULLET(*world,x,y,11.619,3);
+	if(bulletTimer<=0)
+	{
+		if(fireboostTimer>0)
+		{
+			/*
+			new BULLET(*world,x,y,-3,11.619);
+			new BULLET(*world,x,y,0,11.619);
+			new BULLET(*world,x,y,30,11.619);
 
-    new BULLET(*world,x,y,-11.619,-3);
-    new BULLET(*world,x,y,-11.619,0);
-    new BULLET(*world,x,y,-11.619,3);
-    */
+			new BULLET(*world,x,y,-3,-11.619);
+			new BULLET(*world,x,y,0,-11.619);
+			new BULLET(*world,x,y,3,-11.619);
+			
+			new BULLET(*world,x,y,11.619,-3);
+			new BULLET(*world,x,y,11.619,0);
+			new BULLET(*world,x,y,11.619,3);
 
-    for(int index=0;index<4;index++)
-    {
-      new BULLET(*world,x,y,12.0*cos(index*pi/2),12.0*sin(index*pi/2));
-      new BULLET(*world,x,y,12.0*cos(index*pi/2+(fireboostTimer*pi/180)),12.0*sin(index*pi/2+(fireboostTimer*pi/180)));
-      new BULLET(*world,x,y,12.0*cos(index*pi/2-(fireboostTimer*pi/180)),12.0*sin(index*pi/2-(fireboostTimer*pi/180)));
-    }
-    Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
-    bulletTimer=fps/10;
-  }
-  else
-  {
-    if(bulletTimer==0)
-      {
-        for(int index=0;index<4;index++)
-        {
-          new BULLET(*world,x,y,12.0*cos(index*pi/2),12.0*sin(index*pi/2));
-        }
-        Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
-        bulletTimer=fps/5;
-      }
-  }
+			new BULLET(*world,x,y,-11.619,-3);
+			new BULLET(*world,x,y,-11.619,0);
+			new BULLET(*world,x,y,-11.619,3);
+			*/
+
+			for(int index=0;index<4;index++)
+			{
+				new BULLET(*world,x,y,12.0*cos(index*pi/2),12.0*sin(index*pi/2));
+				new BULLET(*world,x,y,12.0*cos(index*pi/2+(fireboostTimer*pi/360)),12.0*sin(index*pi/2+(fireboostTimer*pi/360)));
+				new BULLET(*world,x,y,12.0*cos(index*pi/2-(fireboostTimer*pi/360)),12.0*sin(index*pi/2-(fireboostTimer*pi/360)));
+			}
+			Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
+			bulletTimer=fps/10;
+		}
+		else
+		{
+			for(int index=0;index<4;index++)
+			{
+				new BULLET(*world,x,y,12.0*cos(index*pi/2),12.0*sin(index*pi/2));
+			}
+			Mix_PlayChannel(shootSound.channel,shootSound.sound,0);
+			bulletTimer=fps/5;
+		}
+	}
 }
