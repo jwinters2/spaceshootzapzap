@@ -41,15 +41,34 @@ box WindowSize;
 const Uint8* keystate=SDL_GetKeyboardState(NULL);
 SDL_Joystick* joy;
 SDL_Event event;
+bool fullscreen;
 
 void handleKeypress();
 void handleJoystick();
 
 int main(int argc, char** argv)
 {
+  SDL_DisplayMode display;
+  if(argc==2 && strcmp(argv[1],"-f")==0)
+  {
+    fullscreen=true;
+  }
+  else
+  {
+    fullscreen=false;
+  }
+
+  if(argc==3)
+  {
+    screen.w=atoi(argv[1]);  
+    screen.h=atoi(argv[2]);  
+  }
+  else
+  {
+    screen.w=640;
+    screen.h=640;
+  }
   //WORLD new_world;
-  screen.w=640;
-  screen.h=640;
   globalFrame=0;
   globalScore=0;
   int qwerty=100;
@@ -57,6 +76,16 @@ int main(int argc, char** argv)
 
   SDL_Init(SDL_INIT_EVERYTHING);
   window=SDL_CreateWindow("spaceshootzapzap.exe",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,screen.w,screen.h,SDL_WINDOW_OPENGL);
+
+  if(fullscreen)
+  {
+    SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_GetCurrentDisplayMode(0,&display);
+    screen.w=display.w;
+    screen.h=display.h;
+
+  }
+  
   SDL_GLContext glcontext=SDL_GL_CreateContext(window);
   TTF_Init();
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
