@@ -21,6 +21,8 @@
 #include "enemyboss.h"
 #include "puinvuln.h"
 #include "pushoot.h"
+#include "pubomb.h"
+#include "flash.h"
 using namespace std;
 
 const double pi=3.14159265358979323;
@@ -248,6 +250,10 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
     case 1:
       new PUSHOOT(world,x,y,xvel/3,yvel/3);
       return false;
+		case 2:
+      new PUBOMB(world,x,y,xvel/3,yvel/3);
+      return false;
+
   }
   if((globalScore+1000)%5000>4500)
   {

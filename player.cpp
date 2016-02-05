@@ -13,6 +13,7 @@
 #include "coord.h"
 #include "globals.h"
 #include "bullet.h"
+#include "flash.h"
 using namespace std;
 
 const double pi=3.14159265358979323;
@@ -242,11 +243,26 @@ void PLAYER::checkCollisions()
     if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+radius)&&world->objects.at(index)->type.compare("PUINVULN")==0)
     {
       invincibleTimer=180;
+			new FLASH(*world,0,0,0,0,1.0f,0.0f,1.0f);
       world->deleteobject(world->objects.at(index)->id);
     }
     if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+radius)&&world->objects.at(index)->type.compare("PUSHOOT")==0)
     {
       fireboostTimer=180;
+			new FLASH(*world,0,0,0,0,0.0f,1.0f,0.0f);
+      world->deleteobject(world->objects.at(index)->id);
+    }
+    if(collideCircles(x,y,world->objects.at(index)->x,world->objects.at(index)->y,4+radius)&&world->objects.at(index)->type.compare("PUBOMB")==0)
+    {
+			for(int jndex=0;jndex<world->objects.size();jndex++)
+			{
+				if(world->objects.at(jndex)->hostile)
+				{
+					world->deleteobject(world->objects.at(jndex)->id);
+					jndex--;//vector compresses, this is to avoid skipping objects
+				}
+			}
+			new FLASH(*world,0,0,0,0,1.0f,0.0f,0.0f);
       world->deleteobject(world->objects.at(index)->id);
     }
 
