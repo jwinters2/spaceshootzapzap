@@ -43,46 +43,54 @@ void WORLD::gamelogic()
   //actual logic
   generateEnemies();
   for(int index=0;index<objects.size();index++)
-    {
-      if(objects.at(index)->type.compare("TEXT")==0)
-      {
-	objects.at(index)->setText("SCORE "+leadingZeros(globalScore,8)+intToString(globalScore));
-      }
-    }
+	{
+		if(objects.at(index)->type.compare("TEXT")==0)
+		{
+			objects.at(index)->setText("SCORE "+leadingZeros(globalScore,8)+intToString(globalScore));
+		}
+	}
   
+	if(peaceTime>0)
+	{
+		peaceTime-=60.0/fps;
+	}
+	else
+	{
+		peaceTime=0;
+	}
+
   int step=0;
   bool logic_done=false;
   while(!logic_done)
-    {
-      logic_done=true;
-      for(int index=0;index<objects.size();index++)
 	{
-	  logic_done=(objects.at(index)->logic(step) && logic_done);
+		logic_done=true;
+		for(int index=0;index<objects.size();index++)
+		{
+			logic_done=(objects.at(index)->logic(step) && logic_done);
+		}
+		step++;
 	}
-      step++;
-    }
 
   //sort objects vector
   int iMin;
   OBJECT* buffer;
   for(int j=0;j<objects.size()-1;j++)
-    {
-      iMin=j;
-      for(int i=j;i<objects.size();i++)
 	{
-	  if(objects.at(i)->id < objects.at(iMin)->id)
-	    {
-	      iMin=i;
-	    }
+		iMin=j;
+		for(int i=j;i<objects.size();i++)
+		{
+			if(objects.at(i)->id < objects.at(iMin)->id)
+			{
+				iMin=i;
+			}
+		}
+		if(iMin!=j)
+		{
+			buffer=objects.at(iMin);
+			objects.at(iMin)=objects.at(j);
+			objects.at(j)=buffer;
+		}
 	}
-      if(iMin!=j)
-	{
-	  buffer=objects.at(iMin);
-	  objects.at(iMin)=objects.at(j);
-	  objects.at(j)=buffer;
-	}
-    }
-  
 }
 
 void WORLD::render(int frame)
@@ -184,13 +192,13 @@ void WORLD::addobject(OBJECT* object_a)
 void WORLD::deleteobject(int idToDelete)
 {
   for(int index=0;index<objects.size();index++)
-    {
-      if(objects.at(index)->id==idToDelete)
 	{
-	  delete objects.at(index);
-	  objects.erase(objects.begin()+index);
+		if(objects.at(index)->id==idToDelete)
+		{
+			delete objects.at(index);
+			objects.erase(objects.begin()+index);
+		}
 	}
-    }
 }
 
 void WORLD::generateEnemies()
@@ -204,28 +212,28 @@ void WORLD::generateEnemies()
   }
   int frequency=(1280.0/(screen.w+screen.h))*(15+(30*pow(1.001,(-1*globalFrame/2))));
   cout<<"frequency "<<frequency<<endl;
-  if(globalFrame%frequency==0 && globalFrame>60)
+  if(globalFrame%frequency==0 && peaceTime==0)//globalFrame>60)
   {
 		if(rand()%(screen.w+screen.h)<screen.w)
 		{
 			if(rand()%2==0)
 			{
-				if(randomEnemy(*this,rand()%screen.w,-20,0,6));
+				randomEnemy(*this,rand()%screen.w,-20,0,6);
 			}
 			else
 			{
-				if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6));
+				randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6);
 			}
 		}
 		else
 		{
 			if(rand()%2==0)
 			{
-				if(randomEnemy(*this,-20,rand()%screen.h,6,0));
+				randomEnemy(*this,-20,rand()%screen.h,6,0);
 			}
 			else
 			{
-				if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0));
+				randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0);
 			}
 		}
   }
@@ -251,8 +259,8 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
 		case 2:
       new PUBOMB(world,x,y,xvel/3,yvel/3);
       return false;
-
   }
+
   if((globalScore+1000)%5000>4500)
   {
     //if(abs(x-screen.w/2)>abs(y-screen.h/2))

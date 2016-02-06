@@ -265,6 +265,7 @@ void PLAYER::checkCollisions()
 					jndex--;//vector compresses, this is to avoid skipping objects
 				}
 			}
+			peaceTime=30;
 			new FLASH(*world,0,0,0,0,1.0f,0.0f,0.0f);
       world->deleteobject(world->objects.at(index)->id);
     }

@@ -94,6 +94,7 @@ extern int count;
 extern float fps;
 extern const unsigned char* axes;
 extern const float* dpad;
+extern float peaceTime;
 extern Mix_Music* music;
 /*
 extern Mix_Chunk* shootWAV;
