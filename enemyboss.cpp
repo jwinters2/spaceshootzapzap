@@ -194,27 +194,37 @@ void ENEMYBOSS::addToScore()
 void ENEMYBOSS::stopAndFire()
 {
   if(age<(int)(50*bornFps/60))
-    {
-      return;
-    }
-  if(age==(int)(50*bornFps/60))
-    {
-      xvel=yvelstart;
-      yvel=xvelstart;
-    }
-  if(age%(int)(bornFps*2/3)==0)
-    {
-      for(int index=-7;index<=7;index++)
 	{
-	  new ENEMYBM(*world,x,y,9*cos((direction+90)*pi/180+(0.25*index)),9*sin((direction+90)*pi/180+(0.25*index)));
+		return;
 	}
-    }
+  if(age==(int)(50*bornFps/60))
+	{
+		xvel=yvelstart;
+		yvel=xvelstart;
+	}
+  if(age%(int)(bornFps*2/3)==0)
+	{
+		int range;
+		if(xvel==0)
+		{
+			range=(screen.w*7)/640;
+		}
+		else
+		{
+			range=(screen.h*7)/640;
+		}
+
+		for(int index=-range;index<=range;index++)
+		{
+			new ENEMYBM(*world,x,y,9*cos((direction+90)*pi/180+(2.25*index/range)),9*sin((direction+90)*pi/180+(2.25*index/range)));
+		}
+	}
   if(!((x>radius)&&(x<screen.w-radius)&&(y>radius)&&(y<screen.h-radius))
 	&&(dotProduct(xvel,yvel,x-screen.w/2,y-screen.h/2)>0))
-    {
-      xvel*=-1;
-      yvel*=-1;
-    }
+	{
+		xvel*=-1;
+		yvel*=-1;
+	}
 }
 
 float ENEMYBOSS::speed()

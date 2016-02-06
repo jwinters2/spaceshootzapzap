@@ -42,6 +42,7 @@ const Uint8* keystate=SDL_GetKeyboardState(NULL);
 SDL_Joystick* joy;
 SDL_Event event;
 bool fullscreen;
+int monitor;
 
 void handleKeypress();
 void handleJoystick();
@@ -49,9 +50,17 @@ void handleJoystick();
 int main(int argc, char** argv)
 {
   SDL_DisplayMode display;
-  if(argc==2 && strcmp(argv[1],"-f")==0)
+  if((argc==3 || argc==2) && strcmp(argv[1],"-f")==0)
   {
     fullscreen=true;
+		if(argc==3)
+		{
+			monitor=atoi(argv[2]);
+		}
+		else
+		{
+			monitor=0;
+		}
   }
   else
   {
@@ -80,7 +89,7 @@ int main(int argc, char** argv)
   if(fullscreen)
   {
     SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN_DESKTOP);
-    SDL_GetCurrentDisplayMode(0,&display);
+    SDL_GetCurrentDisplayMode(monitor,&display);
     screen.w=display.w;
     screen.h=display.h;
 
@@ -167,11 +176,11 @@ int main(int argc, char** argv)
       objects.push_back(new PLAYER(new_world,screen.w/2,screen.h/2,0,0));
       objects.push_back(new GTEXT(new_world,("SCORE "+intToString(globalScore)),36,0,screen.h-36,0,0,0));
       //stars
-      for(int i=0;i<50;i++)
-	{
-	  objects.push_back(new STAR(new_world,rand()%screen.w,rand()%screen.h,0,0));
-	}
-      
+      for(int i=0;i<(50*screen.w*screen.h)/(409600);i++)
+			{
+				objects.push_back(new STAR(new_world,rand()%screen.w,rand()%screen.h,0,0));
+			}
+					
       while(playing)
 	{
 	  handleJoystick();
@@ -308,23 +317,23 @@ void handleKeypress()
   keys.z=keystate[SDL_SCANCODE_Z];
   keys.backspace=keystate[SDL_SCANCODE_BACKSPACE];
   if (keys.p&&(!keys.p_old)&&(!gameScoreBoard)&&(!start_menu))
-    {
-      if(gamePause)
 	{
-	  if(Mix_PausedMusic()==1)
-	    {
-	      Mix_ResumeMusic();
-	    }
+		if(gamePause)
+		{
+			if(Mix_PausedMusic()==1)
+			{
+				Mix_ResumeMusic();
+			}
+		}
+		else
+		{
+			if(Mix_PausedMusic()==0)
+			{
+				Mix_PauseMusic();
+			}
+		}
+		gamePause=!gamePause;
 	}
-      else
-	{
-	  if(Mix_PausedMusic()==0)
-	    {
-	      Mix_PauseMusic();
-	    }
-	}
-      gamePause=!gamePause;
-    }
 
   keys.attack_old=keys.attack;
   if(!gameScoreBoard){keys.p_old=keys.p;}

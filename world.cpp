@@ -202,34 +202,32 @@ void WORLD::generateEnemies()
       return;
     }
   }
-  int frequency=15+(30*pow(1.001,(-1*globalFrame/2)));
+  int frequency=(1280.0/(screen.w+screen.h))*(15+(30*pow(1.001,(-1*globalFrame/2))));
   cout<<"frequency "<<frequency<<endl;
   if(globalFrame%frequency==0 && globalFrame>60)
   {
-    switch(rand()%4)
-    {
-      case 0://from top
-        if(randomEnemy(*this,rand()%screen.w,-20,0,6))
-        {
-          break;
-        }
-        //new ENEMYNORMAL(*this,rand()%screen.w,-20,0,12);
-      case 1://from bottom
-        if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6))
-        {
-          break;
-        }
-      case 2://from left
-        if(randomEnemy(*this,-20,rand()%screen.h,6,0))
-        {
-          break;
-        }
-      case 3://from right
-        if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0))
-        {
-          break;
-        }
-    }
+		if(rand()%(screen.w+screen.h)<screen.w)
+		{
+			if(rand()%2==0)
+			{
+				if(randomEnemy(*this,rand()%screen.w,-20,0,6));
+			}
+			else
+			{
+				if(randomEnemy(*this,rand()%screen.w,screen.h+20,0,-6));
+			}
+		}
+		else
+		{
+			if(rand()%2==0)
+			{
+				if(randomEnemy(*this,-20,rand()%screen.h,6,0));
+			}
+			else
+			{
+				if(randomEnemy(*this,screen.w+20,rand()%screen.h,-6,0));
+			}
+		}
   }
 }
 
@@ -257,7 +255,8 @@ bool WORLD::randomEnemy(WORLD& world,int x,int y,int xvel,int yvel)
   }
   if((globalScore+1000)%5000>4500)
   {
-    if(abs(x-screen.w/2)>abs(y-screen.h/2))
+    //if(abs(x-screen.w/2)>abs(y-screen.h/2))
+		if(x==-20 || x==screen.w+20)
     {
       new ENEMYBOSS(world,x,screen.h/2,xvel/3,yvel/3);
     }
