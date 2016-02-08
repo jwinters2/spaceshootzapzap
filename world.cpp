@@ -210,7 +210,7 @@ void WORLD::generateEnemies()
       return;
     }
   }
-  int frequency=(1280.0/(screen.w+screen.h))*(15+(30*pow(1.001,(-1*globalFrame/2))));
+  int frequency=(409600.0/(screen.w*screen.h))*(15+(30*pow(1.001,(-1*globalFrame/2))));
   cout<<"frequency "<<frequency<<endl;
   if(globalFrame%frequency==0 && peaceTime==0)//globalFrame>60)
   {

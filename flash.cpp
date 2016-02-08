@@ -21,7 +21,7 @@ FLASH::FLASH(WORLD& world_a, int x_a, int y_a, int xvel_a, int yvel_a, float red
   hostile=0;
   type="FLASH";
 	opacity=0.8;
-	layer=3;
+	layer=8;
 	red=red_a;
 	green=green_a;
 	blue=blue_a;
